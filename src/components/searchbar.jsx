@@ -4,7 +4,7 @@ import { Dialog ,Popover, Transition} from '@headlessui/react'
  
 import { MagnifyingGlassCircleIcon , FunnelIcon ,InboxStackIcon ,LanguageIcon ,UserIcon ,CursorArrowRippleIcon ,CheckBadgeIcon  } from "@heroicons/react/24/solid";
 import Select from 'react-select'
-
+import Activefilterscomp from './activefilters'
 
 const categery = [
   { value: 'All Category', label: 'All Category',cbheading:"categeryselect"             },
@@ -86,69 +86,40 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function Example() {
+export default function Srarchbarandfilter(props) {
 
   const [reactselectcatagoryselectedOption, setreactselectcatagoryselectedOption] = useState(null)
 
   const [reactselectlanguageselectedOption, setreactselectlanguageselectedOption] = useState(null)
+  
+  //searchbox usestate
+
+  const [searchboxinputdata, setsearchboxinputdata] = useState("")
+  
   //allcheckboses is data-only ---but tracked on every change
  
   const[genderstate,setgenderstate]   = useState(allcheckboxes["gendersc"])
   const[socialsstate,setsocialsstate]   = useState(allcheckboxes["socials"])
   const[Verificationstate,setVerificationstate]   = useState(allcheckboxes["Verificationstatus"])  
   
-  const[activeFiltersstate,setactiveFilters]   = useState([])  
+ 
+  const[triggerforactivefilters,shootnow]   = useState(0)  
  
 
-  function renderactivefilters(allcheckboxestofilterdata)
+  function renderactivefilters(allcheckboxestofilterdata)//this function is used to trigger a child function in usestate in activefilter.jsx
   {
-    const toloaddatatemp = [];
-Object.entries(allcheckboxestofilterdata).forEach((entry) => {
-  const [key, value] = entry;
-  
-  
-
-  if (typeof value === 'object' && !Array.isArray(value) && value !== null) 
-     {
-      console.log("this is object  "+ value);
-      if(value.label  !=  "All Category" && value.label  !=  "All Languages" ){
-         toloaddatatemp.push(value) 
-      }
-       }
-
-       if ( Array.isArray(value) && value !== null) 
-     {
-      
-       
-         value.forEach(element => {
-          
-          
-            if(element.checkstatus == true)
-            {
-               
-              toloaddatatemp.push({ value: element.name, label:  element.name ,cbheading: key})
-               
-            
-            }
-
-          
-           
-           
-
-
-         });
     
-       }
+    shootnow((trigger) => trigger + 1);
 
-       setactiveFilters([...toloaddatatemp])  
-
-       
- 
-});
+    const totalsearchandfilterdata = allcheckboxes
+    totalsearchandfilterdata["search"] =  searchboxinputdata
+   props.senddatatoexplore(totalsearchandfilterdata)
+    
+ //console.log(allcheckboxes)
 
   }
 
-
+   
 
 
 
@@ -355,7 +326,7 @@ renderactivefilters(allcheckboxes)
     />
 
 
-
+           {/* ///////////////////////////////////////start of checkboxes//////////////////////////////////////////////////////// */}
 {/* /////////////////////////////////////////////////////////////gender/////////////////////////////////////////////////////////// */}
              <fieldset className="mt-4">
       <legend className="text-base font-semibold leading-6 text-gray-900"><UserIcon className="h-5 w-5 text-gray-500" style={{ display:"inline-block"}} />Genders </legend>
@@ -449,7 +420,7 @@ renderactivefilters(allcheckboxes)
       </div>
     </fieldset>
 
-        {/* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */}
+        {/* ////////////////////////////////////////////////////end of checkboxes/////////////////////////////////////////////////////////////////////////// */}
           </div>
         </Popover.Panel>
       </Transition>
@@ -484,15 +455,31 @@ renderactivefilters(allcheckboxes)
   }}
  
   />
+     {/* /////////////////////////////Search -box-input//////////////////////////////////////////////////////////////////// */}
         <input style={{  height:"40px" ,  borderLeft:0,borderTopLeftRadius:0,borderBottomLeftRadius:0, borderRight:0, }}
           type="text"
           name="search"
           id="search"
           placeholder="Search for mentors,creators,industry,sector..."
+          onChange={(e)=>{ 
+            
+            
+            setsearchboxinputdata(e.target.value)
+            
+            
+             const totalsearchandfilterdata = allcheckboxes
+               totalsearchandfilterdata["search"] =  e.target.value
+               
+                props.senddatatoexplore(totalsearchandfilterdata)
+            
+            
+            
+            }}
+          value={searchboxinputdata}
           className="block w-full  bg-white rounded-md border-0 py-1.5 pr-14 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:shadow-2xl focus:scale-105 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
         />
         
-         
+           {/* /////////////////////////////Search -box-input//////////////////////////////////////////////////////////////////// */}
         <div className="absolute inset-y-0 right-0 flex py-1.5 pr-1.5">
           <button className="inline-flex items-center   border-0 px-1 font-sans text-xs text-gray-400 hover:bg-transparent "   >
           <MagnifyingGlassCircleIcon className="h-8 w-8 text-gray-300 hover:text-blue-500 hover:bg-transparent hover:scale-105 rounded-full hover:shadow" />
@@ -506,59 +493,8 @@ renderactivefilters(allcheckboxes)
 
 
       {/* ///////////////////////////////////////////////////////////////Active filters/////////////////////// */}
-      <section  className='flex items-center justify-center'>
-                
-        <div className="bg-gray-100 rounded-md " style={{width:"80%" }}>
-          <div className="mx-auto max-w-7xl py-3 px-4 sm:flex sm:items-center sm:px-6 lg:px-8">
-            <h3 className="text-sm font-medium text-gray-500">
-             Active Filters
-              
-            </h3>
-
-            <div aria-hidden="true" className="hidden h-5 w-px bg-gray-300 sm:ml-4 sm:block" />
-
-            <div className="mt-2 sm:mt-0 sm:ml-4">
-              <div className="-m-1 flex flex-wrap items-center">
-                {activeFiltersstate.map((activeFilter) => (
-                  <span
-                    key={activeFilter.label}
-                    className="m-1 inline-flex items-center rounded-full border border-gray-200 bg-white py-1.5 pl-3 pr-2 text-sm font-medium text-gray-900"
-                  >
-                    <span>{activeFilter.label}</span>
-                     
-                    <button
-                      type="button"
-                      id="uniqbutto"
-                      target={"uniqbutto"}
-                      value={activeFilter.label}
-                      cboxheading={activeFilter.cbheading}
-                      className="ml-1 inline-flex h-4 w-4 flex-shrink-0 rounded-full p-1 text-gray-400 hover:bg-gray-200 hover:text-gray-500"
-                       onClick={(e)=>{
-                         console.log(e.target.getAttribute("cboxheading"))
-                        if(e.target.getAttribute("cboxheading") != null)
-                        {
-                         handelclickoncheckbox(e.target.value,false, e.target.getAttribute("cboxheading"))
-                        }
-
-
-                       
-                          
-                      
-
-                       }}
-                    >
-                       
-                      <svg className="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8" style={{pointerEvents:"none"}}>
-                        <path strokeLinecap="round" strokeWidth="1.5" d="M1 1l6 6m0-6L1 7" style={{pointerEvents:"none"}}/>
-                      </svg>
-                    </button>
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      
+      <Activefilterscomp allcheckboxestofilterdatatochild={allcheckboxes}  stateofactivefilters={triggerforactivefilters} onclickingxbutton={handelclickoncheckbox} />
       {/* /////////////////////////////////////////end-filters///////////////////////////////////////////////////////////////////////// */}
     </div>
   )

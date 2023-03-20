@@ -12,6 +12,7 @@ import Dashboardpage from './pages/dashboard.jsx'
 import Generalerrorpage from './pages/generalerror.jsx'
 import Paymentfailurepage from './pages/paymentfailure.jsx'
 import Logoutpage from './pages/logout.jsx'
+import Meetingpage from './pages/meetingpage.jsx'
  
 
 import './index.css'
@@ -71,6 +72,10 @@ const router = createBrowserRouter([
   {
     path: "/logout",
     element: <Logoutpage/>,
+  },
+  {
+    path: "/meeting",
+    element: <Meetingpage/>,
   }
 ]);
 

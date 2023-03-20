@@ -11,6 +11,9 @@ function Signuppage() {
 
   const navigate = useNavigate();
 
+  const server = "https://165.232.114.169:4100"
+  // const server ="http://localhost:4100"
+
  useEffect(() => {
  
   authbeforepage().then((resultofprms)=>{
@@ -56,7 +59,7 @@ function Signuppage() {
 
   function handleSubmit(event) {
      
-    fetch("http://localhost:4100/signupform", {
+    fetch(server+"/signupform", {
      
     // Adding method type
     method: "POST",

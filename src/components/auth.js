@@ -5,7 +5,8 @@ import React, { useEffect } from 'react';
  
 
 async function Authbeforeeverypage() {
-
+  const server = "https://165.232.114.169:4100"
+  // const server ="http://localhost:4100"
 
   const email_id =  localStorage.getItem('uname');
 
@@ -61,7 +62,7 @@ async function Authbeforeeverypage() {
          // Auth_State = 0;
          const toauthdata = {Email_id:email_id , Password:pswd}
           
-            await   fetch("http://localhost:4100/loginform", {
+            await   fetch(server+"/loginform", {
      
          // Adding method type
          method: "POST",

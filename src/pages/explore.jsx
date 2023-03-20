@@ -4,6 +4,8 @@ import Headerauthenticated from '../components/headerafterauth.jsx'
 import authbeforepage from '../components/auth.js'
 import React, { useState , useEffect} from 'react';
 import Searchandfilterbar from '../components/searchbar.jsx'
+import Profilegrid from '../components/explorepagegrid.jsx'
+
 
 function Explorepage() {
      
@@ -37,6 +39,61 @@ function Explorepage() {
   }, []);
 
 
+  const [activefiltersinexplore, setactivefiltersinexplore] = useState([]);
+  const [searchboxdata, setsearchboxdata] = useState(null);
+
+
+  function datafromsearchbartoexplore(data)
+  {
+
+    const toloaddatatemp = [];
+    Object.entries(data).forEach((entry) => {
+      const [key, value] = entry;
+      
+      
+    
+      if (typeof value === 'object' && !Array.isArray(value) && value !== null) 
+         {
+          
+          if(value.label  !=  "All Category" && value.label  !=  "All Languages" ){
+             toloaddatatemp.push(value) 
+          }
+           }
+    
+           if ( Array.isArray(value) && value !== null) 
+         {
+          
+           
+             value.forEach(element => {
+              
+              
+                if(element.checkstatus == true)
+                {
+                   
+                  toloaddatatemp.push({ value: element.name, label:  element.name ,cbheading: key})
+                   
+                
+                }
+    
+              
+               
+               
+    
+    
+             });
+        
+           } 
+
+           setsearchboxdata(data.search)
+           setactivefiltersinexplore(toloaddatatemp )
+           console.log(data)
+    
+           
+     
+    });
+
+  }
+
 
   return (
     
@@ -45,29 +102,17 @@ function Explorepage() {
 
     <div className="container mx-auto sm:px-6 lg:px-8" style={{marginTop:"5%"}} >
       
-      <Searchandfilterbar/>
-      <div>
-      <h1  >Explore Your Favourite Mentors</h1>
+      <Searchandfilterbar  senddatatoexplore={datafromsearchbartoexplore} />
+       
+       {<p>{searchboxdata +" "+ JSON.stringify(activefiltersinexplore)}</p>}
+      
+       <Profilegrid/>
+        
+       
+           
        
         
-      <div >
-      
-      <Link style={{color:"white"}} to={`../`}> <button style={{marginRight:"10px"}} > Back </button></Link>
-      <Link style={{color:"white"}} to={`../dashboard`}> <button style={{marginRight:"10px"}} > Dashboard </button></Link>
-       <button style={{marginRight:"10px"}} > Notifications </button> 
-       <button style={{marginRight:"10px"}} > Profile Icon </button> 
-      
-        
-      </div>
-           
-        <div style={{marginBottom:"10px"}}>
-        <h2 style={{display:"inline-block" , marginRight:"10px"}}>Search bar</h2>
-        <button  >
-          Search
-        </button>
-        </div>
-        <Link style={{color:"white"}} to={`../mentorprofileview`}> <button style={{marginRight:"10px"}} > Profiles Grid </button></Link>
-      </div>
+     
       
       
        

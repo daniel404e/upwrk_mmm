@@ -18,6 +18,8 @@ export default function Loginpage() {
 
 
   const navigate = useNavigate();
+   const server = "https://165.232.114.169:4100"
+  // const server ="http://localhost:4100"
 
   useEffect(() => {
 
@@ -52,8 +54,8 @@ export default function Loginpage() {
   }
   
   function handleloginSubmit(event) {
-       
-    fetch("http://localhost:4100/loginform", {
+    
+    fetch(server+"/loginform", {
      
     // Adding method type
     method: "POST",
@@ -171,7 +173,11 @@ export default function Loginpage() {
   
   
   
-  });
+  }).catch((err)=>{
+
+    
+
+  })
   
   event.preventDefault()
   }
