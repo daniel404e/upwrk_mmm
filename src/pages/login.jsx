@@ -18,8 +18,8 @@ export default function Loginpage() {
 
 
   const navigate = useNavigate();
-   const server = "https://165.232.114.169:4100"
-  // const server ="http://localhost:4100"
+  // const server = "https://165.232.114.169:4100"
+    const server ="http://localhost:4100"
 
   useEffect(() => {
 
@@ -126,6 +126,7 @@ export default function Loginpage() {
       });
       localStorage.setItem('uname', json.emailfromserv);
       localStorage.setItem('pswd', json.paswdfromserv);
+      sessionStorage.setItem('uniqid', json.uniqueIDfromserv);
       sessionStorage.setItem("AUTH", "true");
       setTimeout(() => {
   

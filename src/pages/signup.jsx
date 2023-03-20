@@ -11,8 +11,8 @@ function Signuppage() {
 
   const navigate = useNavigate();
 
-  const server = "https://165.232.114.169:4100"
-  // const server ="http://localhost:4100"
+  //const server = "https://165.232.114.169:4100"
+   const server ="http://localhost:4100"
 
  useEffect(() => {
  
@@ -118,7 +118,8 @@ function Signuppage() {
         });
         
         localStorage.setItem('uname', json.emailfromserv);
-        localStorage.setItem('pswd', json.paswdfromserv);
+        localStorage.setItem('pswd', json.paswdfromserv); 
+        sessionStorage.setItem('uniqid', json.uniqueIDfromserv);
         sessionStorage.setItem("AUTH", "true");
 
         setTimeout(() => {
@@ -236,9 +237,10 @@ function Signuppage() {
                 <div className="mt-2">
                 
                   <input       
-                      type="tel"
+                      
                       name="Mobile_No" 
                       placeholder="99-9999-9999" 
+                      type="tel"
                       required   
                       maxLength="10" 
                       minLength="10" 

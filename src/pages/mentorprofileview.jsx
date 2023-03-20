@@ -41,11 +41,18 @@ function Mentorprofileviewpage() {
         </div>
 
         <div >
-        <Link style={{color:"white"}} to={`../#`}> <button style={{marginRight:"10px"}} > Book session/meating on date.time  </button></Link>
+          <button style={{marginRight:"10px"}} > Book session/meating on date.time  </button> 
            
         </div>
         <div >
-        <Link style={{color:"white"}} to={`../#`}> <button style={{marginRight:"10px"}} > Back </button></Link>
+        <button style={{marginRight:"10px"}} > Back </button> 
+        <button onClick={
+               console.log("booking initiated")
+               
+
+
+
+        }  >BOOK</button>
            
         </div>
          

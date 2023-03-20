@@ -12,7 +12,7 @@ const products = [
       id: 1,
       name: 'Zip Tote Basket',
       color: 'White and black',
-      href: '#',
+      href: '/mentorprofileview',
       imageSrc: 'https://images.unsplash.com/photo-1552058544-f2b08422138a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=699&q=80',
       imageAlt: 'Front of zip tote bag with white canvas, black canvas straps and handle, and black zipper pulls.',
       price: 'Jack Dorsey',

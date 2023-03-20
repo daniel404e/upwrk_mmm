@@ -8,14 +8,16 @@ import Header from '../components/header.jsx'
 import { Outlet, Link , redirect ,Navigate, Route, Routes, useNavigate  } from "react-router-dom";
 import Headingforpage from "../components/headingformeetingpage.jsx"
 
-function Generalerrorpage() {
-  
+function Meetingpage() {
+               
+           
+
     const [meeting, initMeeting] = useDyteClient();
        const [meetingpageauthstate, setmeetingpageauthstate] = useState(0);
        const navigate = useNavigate();
        
        useEffect(() => {
-        
+                     
          authbeforepage().then((resultofprms)=>{
      
            const authstate =resultofprms
@@ -36,14 +38,22 @@ function Generalerrorpage() {
            
          
          })
-       
+
+         //meetingpage is usually followed by a /booking_id param
+         //the booking_id is used for creating or validating or eliminating a meeting room
+         //Send a validate request to server for unique booking_id 
+         //if all the parameters[booking time-window,requesting_user==Booked_user,More than one instence of user open in meeting ,if meeting_id already present ,if authtokens havebeen created for users]
+         //if all is validated and good then render this page else navigate back to bookings in dashboard
+         //run a timer on the page for its expiry [local time and spaced time_api calls] to close the page .
+         //once the page expires or is navigated to a different page it will not render again as it has to be validated but the time_window will be invalid.
 
 
          initMeeting({
-            authToken: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcmdJZCI6ImVmOTQ4MGFiLTJlYzEtNDQyNS1iZWU0LTdiNzczYzgwY2YyYSIsIm1lZXRpbmdJZCI6ImJiYjY3Y2Q3LTYyNTYtNGE3ZS1hYTk2LWUxNjE3ODUwOTA3YyIsInBhcnRpY2lwYW50SWQiOiJhYWE3YmNkNS00ZDM0LTQyYjUtOGU0YS0yYzEyNzY5MzZlNGQiLCJwcmVzZXRJZCI6IjRjOTEyZjcwLTZjYTMtNGE3MC05ZWI0LWVjMmEzYWMyNDMzNSIsImlhdCI6MTY3OTE4MTUyNiwiZXhwIjoxNjg3ODIxNTI2fQ.P4aPD6mKImXu1M7eBzB6o-eWZNCT-JH5alSvHCz6FsWYhA45Yl9FfiW8ZhTAK50Rn7CQpk1juBhUQg9jDDF6IZxVBOrm4UeW-tQzts23q6y9Wvr6rMg0z56kotrlZ-y7tm3W8qt4lNZu3vODd16Dzxmh219_JN2WicQgXtClj7EGCWIpI8NjIZoEX40FVj3DrIxfwzymxGruUrsO2mjepVY2JKGnFku1S6YbTLL-WKxS-by9pZiqYRNKqV1MLAvaYhHEiUFvtylbt0KEcPJjeHiKa9XnGlCh6RXoHQ712AG7M8WmvEiY9QEayS3nAxSuQDTqOo4YLhvrru9CIyZZFw',
+            authToken: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcmdJZCI6ImVmOTQ4MGFiLTJlYzEtNDQyNS1iZWU0LTdiNzczYzgwY2YyYSIsIm1lZXRpbmdJZCI6ImJiYmJhOGYzLWVmNGEtNDFhZS04YjZjLTVkNTFjM2VjNTUxZiIsInBhcnRpY2lwYW50SWQiOiJhYWE4MmNhMy01Mzg1LTQ2MDAtOTQ5Ni04ODNkMjcxNTcyYTYiLCJwcmVzZXRJZCI6ImI2ZGU5ODQ1LTY5MTEtNGFjZC1hMGExLThiNjM5OGY5NjQxOCIsImlhdCI6MTY3OTI5OTMyMCwiZXhwIjoxNjg3OTM5MzIwfQ.FbjEPduadvJOPZlab2nMkxO0cbGlsaL3aoSSgKNmMlmIxmMdOBRtX8QxMjGP_seNiJjS0il_hAIw3bwz187hUYCvrz_tHrzxJqGwPoKHx26nyCLagvxPs1hre50rTypwDl0cbC69lFJ9tIYC_URxk5HMIOfjNPybGc_sxnp0PoBig5IS7LsLDbvi-TH5jaBPMhynKOANR0ahDkURN8s5-daHSzzfXiwMqJHMNOlJ6spaDHfsbdoJKkTPI8nB5VAeLI0fEmoQ7qgPAx5MRUzYAJ9ZttLlEAPQ3c9e_j2huiuzdoBG-UPPz8naRQ3o5cAf_8kzngvIfGEHRloBvk8QcQ',
             defaults: {
               audio: false,
               video: false,
+               
             },
           });
         
@@ -100,5 +110,5 @@ function Generalerrorpage() {
     )
   }
   
-  export default Generalerrorpage
+  export default Meetingpage
   
