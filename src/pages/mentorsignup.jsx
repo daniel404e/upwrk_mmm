@@ -2,7 +2,7 @@ import { Outlet, Link , redirect ,Navigate, Route, Routes, useNavigate  } from "
 import Personalinfocomp from '../components/personalinfomentorsignup.jsx'
 import React, { useState , useEffect , Fragment} from 'react';
 import { RocketLaunchIcon } from "@heroicons/react/24/solid";
-import { CheckIcon, HandThumbUpIcon,CheckCircleIcon, XMarkIcon, UserIcon ,ChevronDownIcon , ChevronUpDownIcon ,BriefcaseIcon ,FireIcon  } from '@heroicons/react/20/solid'
+import { CheckIcon, HandThumbUpIcon,EllipsisVerticalIcon,CheckCircleIcon, XMarkIcon, UserIcon ,ChevronDownIcon , ChevronUpDownIcon ,BriefcaseIcon ,FireIcon  } from '@heroicons/react/20/solid'
 import { toast, ToastContainer } from 'react-toastify';
 import { Listbox, Transition,Popover,Combobox  } from '@headlessui/react'
 import { ColorRing } from  'react-loader-spinner'
@@ -15,6 +15,12 @@ const publishingOptions = [
    
 ]
 
+const skillsuggest = [
+  { id: 1, name: 'Leslie Alexander' },
+  // More users...
+]
+
+
 
  
 
@@ -25,14 +31,58 @@ function classNames(...classes) {
  
 
 export default function Example() {
+  const colorsforskills=["bg-pink-600" ,'bg-purple-600' ,'bg-yellow-500','bg-green-500' ]
+
+  const people = [
+    { id: 1, name: 'Leslie Alexander' },
+     
+  ]
+
+  const [language, setlanguage] = useState([  { id: 0, content: 'English' },
+   
+ 
+  ])
+
+  const [query, setQuery] = useState('')
+  const [selectedPerson, setSelectedPerson] = useState(null)
+  const [selectedlanguage, setselectedlanguage] = useState('')
+  const filteredPeople =
+    query === ''
+      ? people
+      : people.filter((person) => {
+          return person.name.toLowerCase().includes(query.toLowerCase())
+        })
+
+  const [skillstoupdate, setskillstoupdate] = useState("")
+
+ 
+
+ 
+
+
+  const [skills, setskills] = useState(  [
+    {  key:0,  id:0,     name: 'Mentoring', initials: 'ME', href: '#', members: 16, bgColor: 'bg-pink-600' },
+    
+  
+  ] )
   const [selected, setSelected] = useState(publishingOptions[0])
 
   const [experiencetitle, setexperiencetitle] = useState("")
   const [experiencecontent, setexperiencecontent] = useState("")
-
+  
+  const[profiletitle,setprofiletitle]=useState("Your Title /  Expertise")
+  const[profilepitchline,setprofilepitchline]=useState("Your Pitch Line goes here...")
+  const[profileaboutyou,setprofileaboutyou]=useState("")
 
   const [whichpage,setpage] =useState("PERSONALINFO")
-
+  const [skillsquery, setskillsquery] = useState('')
+  const [selectedskill, setselectedskill] = useState(null)
+  const filteredskillsz =
+  skillsquery === ''
+    ? skillsuggest
+    : skillsuggest.filter((person) => {
+        return person.name.toLowerCase().includes(skillsquery.toLowerCase())
+      })
   ////////////////////////////////////////////
   const urlEndpointimg = 'https://ik.imagekit.io/4ryrtmmbd';
 const publicKey = 'public_aA3rhul/456F8yR7a10I+vvAxk8='; 
@@ -390,6 +440,80 @@ const authenticationEndpoint = server+'/signatureimage';
 
   }
 
+  function handledeletelanguage(todeletelangid)
+  {
+
+    console.log(todeletelangid)
+    var totemp =[]
+    totemp = language
+    var todeleteindex=null;
+
+    totemp.forEach((element,indextodelete) => {
+                    
+      if(element.id == todeletelangid)
+      {
+        todeleteindex = indextodelete  
+      }
+
+      
+    });
+
+    totemp.splice(todeleteindex, 1);
+
+
+    totemp.forEach((element2,index2) => {
+
+      totemp[index2].id=index2
+      
+    });
+
+   
+    console.log(totemp)
+    setlanguage([...totemp])
+
+  }
+
+
+
+  function handledeleteofskills(todeleteskillzid)
+  {
+
+    console.log(todeleteskillzid)
+    var totemp =[]
+    totemp = skills
+    var todeleteindex=null;
+
+    totemp.forEach((element,indextodelete) => {
+                    
+      if(element.id == todeleteskillzid)
+      {
+        todeleteindex = indextodelete  
+      }
+
+      
+    });
+
+    totemp.splice(todeleteindex, 1);
+
+
+    totemp.forEach((element2,index2) => {
+
+      totemp[index2].id=index2
+      
+    });
+
+   
+    console.log(totemp)
+    setskills([...totemp])
+
+
+
+
+
+
+
+  }
+
 
 
   return (
@@ -405,7 +529,7 @@ const authenticationEndpoint = server+'/signatureimage';
     
       <div className="min-w-0 flex-1">
       
-        <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight mt-4">
+        <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight pt-4">
           Let's Get started
         </h2>
         <div className="border-b border-gray-200 pb-5">
@@ -509,8 +633,8 @@ const authenticationEndpoint = server+'/signatureimage';
   <div className="bg-blue-600 h-2.5 rounded-full" style={{width: String(progress)+"%" ,display: (progress ==0 || progress==100)? "none":"block"}}></div>
 </div>
                   <div className="relative mt-4 " style={{maxHeight:"50px"}}>
-                    <h3 className="text-md font-medium text-gray-900">Your Title /  Expertise</h3>
-                    <p className="mt-1 text-sm text-gray-500">Your Pitch Line......</p>
+                    <h3 className="text-md font-medium text-gray-900">{profiletitle}</h3>
+                    <p className="mt-1 text-sm text-gray-500">{profilepitchline}</p>
                   </div>
                   
                   <div className="absolute inset-x-0 top-0 flex h-72 items-end justify-end overflow-hidden rounded-lg p-4">
@@ -663,7 +787,9 @@ const authenticationEndpoint = server+'/signatureimage';
                           name="titleexpertiese"
                           id="titleexpertiese"
                           className="block w-full flex-1 rounded-md   border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                          placeholder="Youtuber,Tatoo Artist,Coder,astrologer..."
+                           placeholder="Youtuber,Tatoo Artist,Coder,astrologer..."
+                           onChange={(e)=>{ setprofiletitle(e.target.value)}}
+
                         />
                       </div>
                     </div>
@@ -682,6 +808,7 @@ const authenticationEndpoint = server+'/signatureimage';
                           id="pitchline"
                           className="block w-full flex-1 rounded-md   border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                           placeholder="Making youtube videos on a daily basis."
+                          onChange={(e)=>{setprofilepitchline(e.target.value)}}
                         />
                       </div>
                     </div>
@@ -706,7 +833,11 @@ const authenticationEndpoint = server+'/signatureimage';
                         rows={3}
                         className="mt-1 block w-full rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:py-1.5 sm:text-sm sm:leading-6"
                         placeholder="I have acheived the youngest Entrepreneur award in ..."
-                        defaultValue={''}
+                        value={profileaboutyou}
+                        onChange={(e)=>{ 
+                          console.log(e.target.value)
+                          setprofileaboutyou(e.target.value)
+                          }}
                       />
                     </div>
                     <p className="mt-2 text-sm text-gray-500">
@@ -789,7 +920,7 @@ const authenticationEndpoint = server+'/signatureimage';
         <Listbox value={selected} onChange={setSelected}  >
        {({ open }) => (
         < >
-          <Listbox.Label className="sr-only ">Change published status</Listbox.Label>
+          <Listbox.Label className="sr-only "> </Listbox.Label>
           <div className="  flex " style={{display:"inline-block"}} >
           
             <div className="relative flex inline-flex divide-x divide-indigo-700 rounded-md shadow-sm  "  >
@@ -798,7 +929,7 @@ const authenticationEndpoint = server+'/signatureimage';
                 <p className="text-xs  ">{selected.title}</p>
               </div>
               <Listbox.Button className="inline-flex items-center rounded-l-none rounded-r-md bg-indigo-600 p-2 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2 focus:ring-offset-gray-50">
-                <span className="sr-only">Change published status</span>
+                 
                 <ChevronDownIcon className="h-5 w-5 text-white"  aria-hidden="true" />
               </Listbox.Button>
             </div>
@@ -1132,7 +1263,7 @@ const authenticationEndpoint = server+'/signatureimage';
           value={experiencecontent}
           onChange={(e)=>{setexperiencecontent(e.target.value)}}
           className="block w-full text-sm rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:py-1.5 sm:text-sm  "
-          defaultValue={''}
+           
           placeholder="managed 50 people,ran a restaurent..."
         />
        
@@ -1155,22 +1286,328 @@ const authenticationEndpoint = server+'/signatureimage';
       </div>
     </div>
                   </div>
+                  
                   {/* ///////////////////////////////////////////////
                                                    
   ///////////////////////////////////////////////////////////////////// */}
                   
                   </div>
       {/* //////////////////////////////////////////////experience timeline//end//////////////////////////////////////////////////////////////////// */}
-                  
 
-                  
+       {/* //////////////////////////////////////////////////Skills And Expertise////////////////////////////////////////////////////////////////////////////////////////////////*/}
+      
+      <div className="grid grid-cols-1 " style={{width:"95%"}} >
+      
+                    <div className="col-span-1 sm:col-span-1 " >
+                      <label htmlFor="titleexpertiese" className="text-base font-semibold leading-6 text-gray-900" >
+                      Skills And Expertise
+                      </label>
+                      <div   >
+                      <div>
+      <h2 className="text-sm font-medium text-gray-500">Add your skills here</h2>
+      <ul role="list" className="mt-3 grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
+        {skills.map((project) => (
+          <li key={project.id} className="col-span-1 flex rounded-md shadow-sm mr-10">
+            <div
+              className={classNames(
+                project.bgColor,
+                'flex w-16 flex-shrink-0 items-center justify-center rounded-l-md text-sm font-medium text-white'
+              )}
+            >
+              {project.initials}
+            </div>
+            <div className="flex flex-1 items-center justify-between  shadow-md rounded-r-md border-t border-r border-b border-gray-200 bg-white" >
+              <div className="flex-1  pb-5 px-3 py-2 text-sm">
+                <p  className="font-medium text-gray-700 hover:text-gray-500   ">
+                  {project.name}
+                </p>
+                 
+              </div>
+              <div className="flex-shrink-0 pr-2">
+                <button
+                  type="button"
+                  id={project.id}
+                  className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white bg-transparent text-gray-400 hover:text-gray-500 focus:outline-none hover:bg-gray-100 "
+                  onClick={(e)=>{
+                    
+                    
+                    console.log(e.target.id)
+                    handledeleteofskills(e.target.id)
+                    
+                    
+                    }}
+                >
+                   
+                  <svg className="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8" style={{pointerEvents:"none"}}>
+            <path strokeLinecap="round" strokeWidth="1.5" d="M1 1l6 6m0-6L1 7" style={{pointerEvents:"none"}}/>
+          </svg>
+                </button>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+      </div>
+                      <div className="mt-2 flex rounded-md  justify-end" style={{width:"100%"}}>
+                         
+                      <Combobox as="div" value={selectedskill} onChange={(e)=>{
+                        
+                        setselectedskill(e)
+                        setskillsquery(e.name)
+                        setskillstoupdate(e.name)
+                        
+                        }}>
+       
+      <div className="relative mt-2" >
+        <Combobox.Input
+          className="w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          onChange={(event) => {
+            setskillsquery(event.target.value)  
+            setskillstoupdate(event.target.value)
+            console.log(event.target.value)
+            }}
+          displayValue={(person) => person?.name}
+        />
+        <Combobox.Button className="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
+          <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+        </Combobox.Button>
+
+        {filteredskillsz.length > 0 && (
+          <Combobox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+            {filteredskillsz.map((person) => (
+              <Combobox.Option
+                key={person.id}
+                value={person}
+                className={({ active }) =>
+                  classNames(
+                    'relative cursor-default select-none py-2 pl-3 pr-9',
+                    active ? 'bg-indigo-600 text-white' : 'text-gray-900'
+                  )
+                }
+              >
+                {({ active, selected }) => (
+                  <>
+                    <span className={classNames('block truncate', selected && 'font-semibold')}>{person.name}</span>
+
+                    {selected && (
+                      <span
+                        className={classNames(
+                          'absolute inset-y-0 right-0 flex items-center pr-4',
+                          active ? 'text-white' : 'text-indigo-600'
+                        )}
+                      >
+                        <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                      </span>
+                    )}
+                  </>
+                )}
+              </Combobox.Option>
+            ))}
+          </Combobox.Options>
+        )}
+      </div>
+    </Combobox>
+    <button
+              type="button"
+              className="inline-flex mt-1 ml-5 mr-2 items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+               onClick={()=>{ 
+                
+                
+               // console.log("query: "+skillsquery,"  "+"selected: "+selectedPerson.name) 
+               
+              
+
+               if(skillstoupdate)
+               {
+                // [skills, setskills] = useState(  [
+
+                      var toloaddata567 =   skills
+                      var temp7899 ={  key:(skills.length>0)? skills[skills.length-1].key+1 : 1,  id:(skills.length>0)? skills[skills.length-1].id+1 : 1,     name: skillstoupdate, initials: skillstoupdate.slice(0, 2).toUpperCase() , href: '#', members: 16, bgColor: colorsforskills[Math.floor(Math.random() * (4))] }
+                      toloaddata567.push(temp7899)
+                      //Math.floor(Math.random() * (max - min + 1)) + min
+                      setskills([...toloaddata567])
+                      
+                      setselectedskill("")
+                      setskillsquery("")
+                      setskillstoupdate("")
+
+               }
+               
+                 
+
+               
+               }}
+               >
+              Add  
+            </button>
+
+    
+                      </div>
+                    </div>
+                  </div>
+      
+{/* ///////////////////////////////////////////////Skills And Expertise-end////////////////////////////////////////////////////////////////////////////////////////////////////////////// */}
+
+
+{/* ////////////////////////////////////////////////Add-Languages////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */}
+<div className="grid grid-cols-1  " style={{width:"95%"}} >
+      
+      <div className="col-span-1 sm:col-span-1 mb-10" >
+        <label htmlFor="titleexpertiese" className="text-base font-semibold leading-6 text-gray-900" >
+        Language Proficiency
+        </label>
+        <div   >
+        <div>
+<h2 className="text-sm font-medium text-gray-500">Add your language proficiency here</h2>
+ 
+</div>
+</div>
+
+
+{ language.map((lang) => (
+<span className="inline-flex items-center mt-4 mb-2 mr-2 rounded-md bg-blue-100 px-2.5 py-0.5 text-sm font-medium text-blue-800"
+       key={lang.id}
+                >
+        {lang.content}
+        <button
+          type="button"
+          className="ml-2 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full text-indigo-400 hover:bg-indigo-200 hover:text-indigo-500 focus:bg-indigo-500 focus:text-white focus:outline-none"
+          key={lang.id}
+          id={lang.id}
+         onClick={(e)=>{
+          handledeletelanguage(e.target.id)}}
+       
+       
+        >
+           
+          <svg className="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8" style={{pointerEvents:"none"}}>
+            <path strokeLinecap="round" strokeWidth="1.5" d="M1 1l6 6m0-6L1 7" style={{pointerEvents:"none"}} />
+          </svg>
+        </button>
+      </span>
+
+))
+
+}
+
+        <div className="mt-2 flex rounded-md  justify-end" style={{width:"100%"}}>
+
+        
+           
+        <Combobox as="div" value={selectedPerson} onChange={(e)=>{
+          
+          setSelectedPerson(e)
+          setselectedlanguage(e.name)
+          
+          
+          }}>
+
+<div className="relative mt-2" >
+<Combobox.Input
+className="w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+onChange={(event) => {
+  setQuery(event.target.value)
+  setselectedlanguage(event.target.value)
+console.log(event.target.value)
+}}
+displayValue={(person) => person?.name}
+/>
+<Combobox.Button className="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
+<ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+</Combobox.Button>
+
+{filteredPeople.length > 0 && (
+<Combobox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+{filteredPeople.map((person) => (
+<Combobox.Option
+  key={person.id}
+  value={person}
+  className={({ active }) =>
+    classNames(
+      'relative cursor-default select-none py-2 pl-3 pr-9',
+      active ? 'bg-indigo-600 text-white' : 'text-gray-900'
+    )
+  }
+>
+  {({ active, selected }) => (
+    <>
+      <span className={classNames('block truncate', selected && 'font-semibold')}>{person.name}</span>
+
+      {selected && (
+        <span
+          className={classNames(
+            'absolute inset-y-0 right-0 flex items-center pr-4',
+            active ? 'text-white' : 'text-indigo-600'
+          )}
+        >
+          <CheckIcon className="h-5 w-5" aria-hidden="true" />
+        </span>
+      )}
+    </>
+  )}
+</Combobox.Option>
+))}
+</Combobox.Options>
+)}
+</div>
+</Combobox>
+<button
+type="button"
+className="inline-flex mt-1 ml-5 mr-2 items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+ onClick={()=>{ 
+  
+  
+ // console.log("query: "+skillsquery,"  "+"selected: "+selectedPerson.name) 
+ 
+ if(selectedlanguage)
+               {
+                // [skills, setskills] = useState(  [
+
+                      var toloaddata567 =   language
+                      var temp7899 ={  key:(language.length>0)? language[language.length-1].key+1 : 1,  id:(language.length>0)? language[language.length-1].id+1 : 1,     content: selectedlanguage }
+                      toloaddata567.push(temp7899)
+                      
+                      setlanguage([...toloaddata567])
+                      
+                    
+                      setselectedlanguage("")
+                      setSelectedPerson("")
+                      setQuery("")
+               }
+               
+                 
+
+               
+              
+
+  
+   
+
+ 
+ }}
+ >
+Add  
+</button>
+
+
+        </div>
+      </div>
+    </div>
+
+
+{/* ////////////////////////////////////////////////add-languages-end/////////////////////////////////////////////////////////////////////////////////////////////////////// */}
+
+
+
+
                 </div>
-                <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
+                <div className="bg-gray-50 px-5 py-3 text-right sm:px-6">
                   <button
                     type="submit"
                     className="inline-flex justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
                   >
-                    Save
+                   Next
                   </button>
                 </div>
               </div>
@@ -1187,135 +1624,7 @@ const authenticationEndpoint = server+'/signatureimage';
         </div>
       </div>
 
-      <div className="mt-10 sm:mt-0" >
-        <div className="md:grid md:grid-cols-3 md:gap-6">
-          <div className="md:col-span-1">
-            <div className="px-4 sm:px-0">
-              <h3 className="text-base font-semibold leading-6 text-gray-900">Notifications</h3>
-              <p className="mt-1 text-sm text-gray-600">Decide which communications you'd like to receive and how.</p>
-            </div>
-          </div>
-          <div className="mt-5 md:col-span-2 md:mt-0">
-            <form action="#" method="POST">
-              <div className="overflow-hidden shadow sm:rounded-md">
-                <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
-                  <fieldset>
-                    <legend className="sr-only">By Email</legend>
-                    <div className="text-sm font-semibold leading-6 text-gray-900" aria-hidden="true">
-                      By Email
-                    </div>
-                    <div className="mt-4 space-y-4">
-                      <div className="flex items-start">
-                        <div className="flex h-6 items-center">
-                          <input
-                            id="comments"
-                            name="comments"
-                            type="checkbox"
-                            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                          />
-                        </div>
-                        <div className="ml-3 text-sm leading-6">
-                          <label htmlFor="comments" className="font-medium text-gray-900">
-                            Comments
-                          </label>
-                          <p className="text-gray-500">Get notified when someones posts a comment on a posting.</p>
-                        </div>
-                      </div>
-                      <div className="flex items-start">
-                        <div className="flex h-6 items-center">
-                          <input
-                            id="candidates"
-                            name="candidates"
-                            type="checkbox"
-                            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                          />
-                        </div>
-                        <div className="ml-3 text-sm leading-6">
-                          <label htmlFor="candidates" className="font-medium text-gray-900">
-                            Candidates
-                          </label>
-                          <p className="text-gray-500">Get notified when a candidate applies for a job.</p>
-                        </div>
-                      </div>
-                      <div className="flex items-start">
-                        <div className="flex h-6 items-center">
-                          <input
-                            id="offers"
-                            name="offers"
-                            type="checkbox"
-                            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                          />
-                        </div>
-                        <div className="ml-3 text-sm leading-6">
-                          <label htmlFor="offers" className="font-medium text-gray-900">
-                            Offers
-                          </label>
-                          <p className="text-gray-500">Get notified when a candidate accepts or rejects an offer.</p>
-                        </div>
-                      </div>
-                    </div>
-                  </fieldset>
-                  <fieldset>
-                    <legend className="contents text-sm font-semibold leading-6 text-gray-900">
-                      Push Notifications
-                    </legend>
-                    <p className="text-sm text-gray-500">These are delivered via SMS to your mobile phone.</p>
-                    <div className="mt-4 space-y-4">
-                      <div className="flex items-center">
-                        <input
-                          id="push-everything"
-                          name="push-notifications"
-                          type="radio"
-                          className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                        />
-                        <label
-                          htmlFor="push-everything"
-                          className="ml-3 block text-sm font-medium leading-6 text-gray-900"
-                        >
-                          Everything
-                        </label>
-                      </div>
-                      <div className="flex items-center">
-                        <input
-                          id="push-email"
-                          name="push-notifications"
-                          type="radio"
-                          className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                        />
-                        <label htmlFor="push-email" className="ml-3 block text-sm font-medium leading-6 text-gray-900">
-                          Same as email
-                        </label>
-                      </div>
-                      <div className="flex items-center">
-                        <input
-                          id="push-nothing"
-                          name="push-notifications"
-                          type="radio"
-                          className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                        />
-                        <label
-                          htmlFor="push-nothing"
-                          className="ml-3 block text-sm font-medium leading-6 text-gray-900"
-                        >
-                          No push notifications
-                        </label>
-                      </div>
-                    </div>
-                  </fieldset>
-                </div>
-                <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
-                  <button
-                    type="submit"
-                    className="inline-flex justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-                  >
-                    Save
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
+     
     </div>
     
 
