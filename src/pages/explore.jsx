@@ -97,7 +97,7 @@ function Explorepage() {
 
   return (
     
-    <div >
+    <div className="bg-white">
    {exploreauthstate? <Headerauthenticated/> : <Header/>   } 
 
     <div className="container mx-auto sm:px-6 lg:px-8" style={{marginTop:"5%"}} >

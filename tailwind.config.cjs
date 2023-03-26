@@ -16,10 +16,20 @@ module.exports = {
     },
    
   },
+  corePlugins: {
+    aspectRatio: false,
+  },
   plugins: [
 
     require('@tailwindcss/forms'),
     require('flowbite/plugin'),
+    require('@tailwindcss/line-clamp'),
+    require('@tailwindcss/aspect-ratio'),
+    require("daisyui"),
   ],
+
+  daisyui: {
+    themes: [],
+  },
   
 }
