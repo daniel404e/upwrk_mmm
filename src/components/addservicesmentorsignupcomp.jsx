@@ -2,11 +2,11 @@ import React, { useState , useEffect ,Fragment, useRef} from 'react';
 import countries from '../data/countries.json'
 import currencydata from '../data/currency.json'
 import { toast, ToastContainer } from 'react-toastify';
-import { VideoCameraIcon , PhotoIcon, UserCircleIcon ,XMarkIcon ,EnvelopeIcon} from "@heroicons/react/24/solid";
+import { VideoCameraIcon ,ChatBubbleBottomCenterIcon  , PhotoIcon, UserCircleIcon ,XMarkIcon ,EnvelopeIcon , CheckCircleIcon} from "@heroicons/react/24/solid";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCoffee,faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons'
 import { Dialog, Transition } from '@headlessui/react'
- 
+import  axios from 'axios'
 
 
 
@@ -21,20 +21,152 @@ const exchangeratesapikey = "KYYZLE5fNxoCAh6op6VN1ovfMRhf8yU5";
 
 
 
- const modelimgscr="https://images.unsplash.com/photo-1679699832481-caf175bf61c8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1228&q=80"
+ 
 
 
 
  function addservices(props)
  {
 
+
+  const [modelimgscr,             setmodelimgscr] = useState("")
+  const [modeltitle,              setmodeltitle] = useState("");
+  const [modelcontent,            setmodelcontent] = useState('');
+  const [modeltypeofservice,      setmodeltypeofservice] = useState('');
+  const [modeldurationofservice,  setmodeldurationofservice] = useState('');
+ 
+
+
+  /////////////////////////////////////////
+    ////////////////////////////////////////////
+    const urlEndpointimg = 'https://ik.imagekit.io/4ryrtmmbd';
+  const publicKey = 'public_aA3rhul/456F8yR7a10I+vvAxk8='; 
+   //const server = "https://165.232.114.169:4100"
+   const server ="http://localhost:4100"
+  const authenticationEndpoint = server+'/signatureimage';
+    ///////////////////////////////////////////
+    const [file2, setFile] = useState('');
+    const [imgstateb, setimgstateb] = useState('');
+    const [progress, setProgress] = useState(0)
+    const [isLoaded, setIsLoaded] = useState(false);
+    const [imgfileid, setimgfileid] = useState('');
+    /////////////////////////////////////////////////
+    const handleFileChange = (e) => {
+      if (e.target.files) {
+         
+        if(    e.target.files[0] && e.target.files[0]['type'].split('/')[0] === 'image')
+        {
+          setFile(e.target.files[0]);
+  
+          handleUploadFile(e.target.files[0])
+           
+        }
+        else{
+              
+          alert("please upload only images")
+        }
+       
+      }
+    };
+  
+    const handleUploadFile = (filetoup) => {
+  
+      console.log("inside upload click")
+      if (!filetoup) {
+        return;
+      }
+  
+    
+  
+      console.log("i madew it bbba")
+  
+      
+      fetch(server+'/imgauth', {
+        method: 'GET',
+        })
+        .then((res) => res.json())
+        .then((data) => {
+          setIsLoaded(false)
+          console.log(data)
+          const tosenddata= new FormData()
+  
+          tosenddata.append("file",filetoup)
+          tosenddata.append("publicKey",publicKey)
+          tosenddata.append("signature",data.signature)
+          tosenddata.append("expire",data.expire)  
+          tosenddata.append("token",data.token)  
+          tosenddata.append("fileName",props.fname+props.lname+"service")  
+      
+          console.log(tosenddata)
+          axios.post('https://upload.imagekit.io/api/v1/files/upload', tosenddata,{
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            onUploadProgress: (progressEvent) => {
+              const progress = (progressEvent.loaded / progressEvent.total) * 100;
+              setProgress(progress);
+            }
+          })
+        .then((res2) => {
+          
+          console.log(res2.data.url)
+          setimgfileid(res2.data.fileId)
+          setimgstateb(res2.data.url)
+        
+        })
+          
+        .catch((err2) => console.error(err2));
+  
+            
+        
+        
+        
+        })
+        .catch((err) => console.error(err));
+    };
+  /////////////////////////////////////////////
+
   const [services, setservices] = useState([
     
     
-    {id:0,servicetitle:"Move to Germany Now",typeofservice:"VIDEOCALL",durationinminutes:"45 Min",priceofservice:"999",contentofservice:"hello ipsum baby" ,currencyofservice:"INR",currencysymbol:"\u20B9" ,imgscr:"https://images.unsplash.com/photo-1513569771920-c9e1d31714af?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"  },
+    {id:0,servicetitle:"1:1 Meet With ME",typeofservice:"Video Conferencing",durationinminutes:"45 Min",priceofservice:"999",contentofservice:"Hello Everybody " ,currencyofservice:"INR",currencysymbol:"\u20B9" ,imgscr:"https://images.unsplash.com/photo-1484807352052-23338990c6c6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" ,imagesrcfileid:""  },
   
   
   ])
+
+
+
+
+
+  function handleservicedelete(indextodelete)
+  {
+
+
+
+    console.log(indextodelete)
+    var totemp =[]
+    totemp = services
+ 
+
+    totemp.splice(indextodelete, 1);
+
+
+    totemp.forEach((element2,index2) => {
+
+      totemp[index2].id=index2
+      
+    });
+
+   
+    console.log(totemp)
+    setservices([...totemp])
+
+    
+
+
+
+
+  }
   
 
 
@@ -74,7 +206,7 @@ currencydata.forEach(element => {
   const [priceofservicestate, setpriceofservicestate] = useState(0)
   const [currencystate, setcurrencystate] = useState("INR")
   const [moreaboutservicestate, setmoreaboutservicestate] = useState("")
-  const [serviceimgsrc, setserviceimgsrc] = useState("")
+  
 
 
 
@@ -93,7 +225,7 @@ currencydata.forEach(element => {
        
         <div  >
 
-
+                       
 
 
 
@@ -156,19 +288,16 @@ currencydata.forEach(element => {
             </div>
 
             <div className="col-span-full  ">
-            <div className='relative flex drop-shadow-2xl justify-center'>
-            <h2 className="text-xl mt-5 text-justify  font-semibold leading-7 text-gray-900">Move to Germany Now Without a Internship or Job</h2>
+            <div className='relative flex drop-shadow-xl justify-center'>
+            <h2 className="text-xl mt-5 text-justify  font-semibold leading-7 text-gray-900">{modeltitle}</h2>
               
               </div>
-              <div className='relative mt-2 flex drop-shadow-2xl justify-center'>
-              <div className=" bg-white text-justify relative flex  justify-center p-6 rounded-lg shadow-xl"  style={{width:"96%"}}>
-               <p  className=" text-justify text-md leading-6  relative text-gray-600" > Electricity is used within telecommunications, and indeed the electrical telegraph, demonstrated commercially in 1837 by Cooke and Electricity is used within telecommunications, and indeed the electrical telegraph, demonstrated commercially in 1837 by Cooke and Wheatstone,[84] was one of its earliest applications. With the construction of first transcontinental, and then transatlantic, telegraph systems in the 1860s, electricity had enabled communications in minutes across the globe. Optical fibre and satellite communication have taken a share of the market for communications systems, but electricity can be expected to remain an essential part of the process.
-
-Electronic devices make use of the transistor, perhaps one of the most important inventions of the twentieth century,[85] and a fundamental building block of all modern circuitry. A modern integrated circuit may contain many billions of miniaturised transistors in a region only a few centimetres square.Wheatstone,[84] was one of its earliest applications. With the construction of first transcontinental, and then transatlantic, telegraph systems in the 1860s, electricity had enabled communications in minutes across the globe. Optical fibre and satellite communication have taken a share of the market for communications systems, but electricity can be expected to remain an essential part of the process.
-
-Electronic devices make use of the transistor, perhaps one of the most important inventions of the twentieth century,[85] and a fundamental building block of all modern circuitry. A modern integrated circuit may contain many billions of miniaturised transistors in a region only a few centimetres square.</p>
+             { (modelcontent)? <div className='relative mt-2 flex drop-shadow-sm justify-center'>
+              <div className=" bg-white text-justify relative flex  justify-center p-6 rounded-lg shadow-sm"  style={{width:"96%"}}>
+               <p  className=" text-justify text-md leading-6  relative text-gray-600" >{modelcontent} </p>
               </div>
-              </div>
+              </div> :null
+             }
               
             </div>
 
@@ -192,7 +321,7 @@ Electronic devices make use of the transistor, perhaps one of the most important
         <svg className="-ml-0.5 mr-1.5 h-2 w-2 text-indigo-400" fill="currentColor" viewBox="0 0 8 8">
           <circle cx={4} cy={4} r={3} />
         </svg>
-        Video Meeting
+        {modeltypeofservice}
       </span>
             </div>
 
@@ -204,7 +333,7 @@ Electronic devices make use of the transistor, perhaps one of the most important
         <svg className="-ml-0.5 mr-1.5 h-2 w-2 text-indigo-400" fill="currentColor" viewBox="0 0 8 8">
           <circle cx={4} cy={4} r={3} />
         </svg>
-        45 Min
+        {modeldurationofservice}
       </span>
             </div>
 
@@ -271,7 +400,7 @@ Electronic devices make use of the transistor, perhaps one of the most important
                   <fieldset>
                      
                     <div className="text-sm font-semibold leading-6 text-gray-900" aria-hidden="true">
-                      Services 
+                      Preview
                     </div>
                     <div className="mt-4 space-y-4">
                       <div className="flex justify-center mb-10">
@@ -301,24 +430,53 @@ Electronic devices make use of the transistor, perhaps one of the most important
       {services.map((service,serviceid)=>(
 
            <div key={service.id}  className="relative hover:scale-105 hover:shadow-2xl transition-all duration-300  md:col-span-1 max-w-sm bg-white border border-gray-200 rounded-xl shadow-lg dark:bg-gray-800 dark:border-gray-700" style={{height:"310px" ,width:"280px"} }   >
+                   
+          
+   
    <div style={{height:"60px" ,width:"100%"} }   className="overflow-hidden  hover:scale-y-150   ">
     <a >
         <img   className="rounded-t-lg  " src={service.imgscr} alt="" />
     </a>
     </div>
+    <div className="absolute top-0 right-0   pt-4 pr-4 sm:block">
+                  <button
+                    type="button"
+                    value={serviceid}
+                    className="rounded-md bg-gray-50 text-gray-400 hover:text-red-500  "
+                    onClick={(e) =>{
+                      console.log(e)
+                      
+                      
+                       handleservicedelete(e.target.value)
+                       
+                       
+                       
+                    }}
+                  >
+                     
+                    <XMarkIcon className="h-6 w-6"  style={{pointerEvents:"none"}} aria-hidden="true" />
+                  </button>
+                </div>
     <div className="pt-5  pl-5 pr-5 pb-2  overflow-auto  "  style={{width:"278px",height:"200px"}}  >
         <a href="#">
             <h5 className="mb-1 text-xl font-bold tracking-tight text-gray-900 dark:text-white">{service.servicetitle}</h5>
         </a>
+        {
+          (service.typeofservice == "Video Conferencing")? 
         <span className="inline-flex items-center rounded-md bg-purple-100 px-2.5 py-0.5 text-sm font-medium text-purple-800">
-        <h2 className='font-semibold'> <VideoCameraIcon style={{display:"inline-block"}} className="h-5 w-5 text-gray-500" /> {service.durationinminutes}</h2>
-         </span>
+         <h2 className='font-semibold'> <VideoCameraIcon style={{display:"inline-block"}} className="h-5 w-5 text-gray-500" /> {service.durationinminutes}</h2>
+          </span>:<span className="inline-flex items-center rounded-md bg-yellow-100 px-2.5 py-0.5 text-sm font-medium text-yellow-800">
+          <h2 className='font-semibold'> <ChatBubbleBottomCenterIcon   style={{display:"inline-block"}} className="h-5 w-5 text-gray-500" /> {service.durationinminutes}</h2>
+      </span>
+
+        }
+
          <span className="inline-flex items-center rounded-lg bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800"  style={{marginLeft:"10px"}}>
                <h2 className='font-semibold ' style={{fontSize:"15px"}}>{service.currencysymbol}</h2>      <h2 className='font-semibold text-md'>  { service.priceofservice} </h2>
       </span>
         
         {
-            (service.contentofservice.length > 150)? <p   className="mb-1 mt-1 font-normal text-gray-700 dark:text-gray-400  ">{ limit(service.contentofservice,70) +"..." }</p>:<p   className="mb-3 font-normal text-gray-700 dark:text-gray-400  ">{ limit(service.contentofservice,150)   }</p>
+            (service.contentofservice.length > 150)? <p   className="mb-1 mt-2 font-normal text-gray-700 dark:text-gray-400  ">{ limit(service.contentofservice,70) +"..." }</p>:<p   className="mb-3 font-normal text-gray-700 dark:text-gray-400  ">{ limit(service.contentofservice,150)   }</p>
 
 
         }
@@ -326,11 +484,35 @@ Electronic devices make use of the transistor, perhaps one of the most important
     </div>
     <div className="bg-gray-50 px-4 py-3 text-right sm:px-6 rounded-md   " style={{position:"absolute", bottom:"0" , width:"100%"}}>
                   
-                  
+                           
+ 
+
+
+
                    <button  style={{position:"absolute",  left:"25px"  }}
                     type="submit"
+                    value={serviceid}
                     className="inline-flex justify-start rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-                    onClick={() => setOpen(true)}  
+                    onClick={(e) =>{    
+
+                      
+                       
+                     
+                      setmodelimgscr (services[e.target.value].imgscr)  
+                      setmodeltitle (services[e.target.value].servicetitle)   
+                       setmodelcontent (services[e.target.value].contentofservice)   
+                       setmodeltypeofservice (services[e.target.value].typeofservice) 
+                      setmodeldurationofservice (services[e.target.value].durationinminutes)
+
+                      console.log(services[e.target.value])
+                              
+                      setOpen(true)
+                                 
+                             
+                             console.log(e.target.value)
+
+
+                      } }  
                        >
                     Know More
                   </button>
@@ -349,12 +531,13 @@ Electronic devices make use of the transistor, perhaps one of the most important
 
 
 
+
  
       ))}
 
 
 
-
+{/* setOpen(true) */}
       {/* ))} */}
     </div>
    
@@ -419,8 +602,8 @@ Electronic devices make use of the transistor, perhaps one of the most important
 
  
                 >
-                  <option>Video Conferencing</option>
-                  <option>Text Message Conferencing</option>
+                  <option key={0}>Video Conferencing</option>
+                  <option key={1}  >Text Message Conferencing</option>
                    
                 </select>
               </div>
@@ -444,7 +627,7 @@ Electronic devices make use of the transistor, perhaps one of the most important
 
                     >
                  { durationoptions.map((duration,durationidx)=>(
-                  <option>{duration.value+" "+duration.unit}</option>
+                  <option key={duration.value}>{duration.value+" "+duration.unit}</option>
                   
                  ))
                  
@@ -502,7 +685,7 @@ Electronic devices make use of the transistor, perhaps one of the most important
 
                    {
                     currencyoptionstolist.map((curr,currindex)=>(
-                  <option>{curr}</option>
+                  <option key={curr}>{curr}</option>
                    
                     ))
                    }
@@ -521,7 +704,7 @@ Electronic devices make use of the transistor, perhaps one of the most important
                   onChange={ (e)=>{setmoreaboutservicestate(e.target.value)}} 
                   value={moreaboutservicestate}
                   id="street-address"
-                  
+                  rows="5"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                  
                     
@@ -529,11 +712,37 @@ Electronic devices make use of the transistor, perhaps one of the most important
               </div>
             </div>
 
-           
-      
-   
+            <div className=" col-span-full bg-gray-200  h-2.5 dark:bg-gray-700 " style={{width: String(progress)+"%" ,display: (progress ==0 || progress==100)? "none":"block" }}>
+  <div className="bg-blue-600 h-2.5 rounded-full" style={{width: String(progress)+"%" ,display: (progress ==0 || progress==100)? "none":"block"}}></div>
+</div>
 
-                <div className="col-span-full">
+            {(imgstateb)?   (   <div className=" col-span-full rounded-md bg-green-50 p-4">
+      <div className="flex">
+        <div className="flex-shrink-0">
+          <CheckCircleIcon className="h-5 w-5 text-green-400" aria-hidden="true" />
+        </div>
+        <div className="ml-3">
+          <p className="text-sm font-medium text-green-800">Successfully uploaded</p>
+        </div>
+        <div className="ml-auto pl-3">
+          <div className="-mx-1.5 -my-1.5">
+            <button
+              type="button"
+              className="inline-flex rounded-md bg-red-50 p-1.5 text-red-500 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:ring-offset-red-50"
+              onClick={()=>{
+    setFile('');
+  setimgstateb('');
+  setimgfileid('');
+  setProgress(0)
+   setIsLoaded (false)}}
+            >
+              <span className="sr-only">Dismiss</span>
+              <XMarkIcon className="h-5 w-5" aria-hidden="true" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>) : ( <div className="col-span-full">
    
               <label htmlFor="cover-photo" className="block text-sm font-medium leading-6 text-gray-900">
                 Photo
@@ -551,7 +760,7 @@ Electronic devices make use of the transistor, perhaps one of the most important
                       className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
                     >
                       <span>Upload a file</span>
-                      <input id="file-upload" name="file-upload" type="file" className="sr-only" />
+                      <input id="file-upload" name="file-upload"    accept="image/*" onChange={handleFileChange}  type="file" className="sr-only" />
                     </label>
                     <p className="pl-1">or drag and drop</p>
                   </div>
@@ -559,6 +768,7 @@ Electronic devices make use of the transistor, perhaps one of the most important
                 </div>
               </div>
             </div>
+    )}
 
 
             <div className="col-span-full  ">
@@ -618,11 +828,24 @@ Electronic devices make use of the transistor, perhaps one of the most important
                             toloaddata = services
                                 
                                 console.log(services)
-                          var temp342 = {id:services[services.length-1].id+1,servicetitle:servicetitlestate ,typeofservice:typeofservicestate,durationinminutes:durationstate,priceofservice:priceofservicestate,contentofservice:moreaboutservicestate ,currencyofservice:currencystate , currencysymbol:symboltoset ,imgscr:""}
+                          var temp342 = {id: (services.length)?  services[services.length-1].id+1 : 1 ,servicetitle:servicetitlestate ,typeofservice:typeofservicestate,durationinminutes:durationstate,priceofservice:priceofservicestate,contentofservice:moreaboutservicestate ,currencyofservice:currencystate , currencysymbol:symboltoset ,imgscr: (imgstateb != "" )? imgstateb : "https://images.unsplash.com/photo-1484807352052-23338990c6c6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" ,imagesrcfileid:imgfileid }
                             
                           toloaddata.push(temp342)
                              
                           setservices([...toloaddata])
+
+                           setFile('');
+                           setimgstateb('');
+                           setimgfileid('');
+                            setProgress(0)
+                           setIsLoaded (false)
+                           setservicetitlestate ("")
+                           settypeofservicestate ("Video Conferencing")
+                          setdurationstate ("15 Min")
+                           setpriceofservicestate  (0)
+                          setcurrencystate ("INR")
+                          setmoreaboutservicestate ("")
+                           
 
                          
                         
@@ -703,7 +926,7 @@ Electronic devices make use of the transistor, perhaps one of the most important
 
                     else{
                            
-                           toast.warn( "Price of a Service Can not be ZERO!", {
+                           toast.warn( "Please Fill in All the Required Fields ", {
                               position: "top-center",
                               autoClose: 5000,
                               hideProgressBar: false,
@@ -722,7 +945,7 @@ Electronic devices make use of the transistor, perhaps one of the most important
                  
   
                                            
-                              
+                           console.log(services)   
 
                        
 

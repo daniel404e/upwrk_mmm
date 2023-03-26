@@ -131,7 +131,7 @@ export default function Example() {
       
 
       {
-        <Addservicescomp/>
+        <Addservicescomp fname="joshua" lname="daniel" />
         
         // whichpage=="PERSONALINFO" ? <Personalinfocomp senddatatomentorsignup={infofrompersonalinfocomp}  /> :whichpage=="PROFILESETUP" ? <Profilesetupcomp fname={personalinfodata.fname} lname={personalinfodata.lname} ugender={personalinfodata.gender} senddatatomentorsignupnow={infofromprofilesetupcomp}  /> : whichpage=="ADDSERVICES"? <Addservicescomp/> : null 
         
