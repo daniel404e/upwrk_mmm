@@ -18,6 +18,9 @@ function Personalinfo(props) {
   const [countryof,setcountryof]=useState("India")
   const [cityof,setcityof]=useState("")
   const [genderof,setgenderof]=useState("Male")
+  const [password,setpassword]=useState("")
+  const [conformpassword,setconformpassword]=useState("")
+  
  
   function displaytoast()
 {
@@ -55,6 +58,7 @@ function Personalinfo(props) {
               <div className="overflow-hidden shadow rounded-md">
                 <div className="bg-white px-4 py-5 sm:p-6">
                   <div className="grid grid-cols-6 gap-6">
+                 
                     <div className="col-span-6 sm:col-span-3">
                       <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
                         First name
@@ -88,6 +92,43 @@ function Personalinfo(props) {
                         className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                       />
                     </div>
+
+
+                    <div className="col-span-6 sm:col-span-3">
+                      <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
+                        Password
+                      </label>
+                      <input
+                        type="password"
+                        onChange={(e)=>{setpassword(e.target.value) }}
+                        value={password}
+                        placeholder=""
+                        required    
+                        name="password"
+                        id="password"
+                        autoComplete="password"
+                        className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      />
+                    </div>
+
+                    <div className="col-span-6 sm:col-span-3">
+                      <label htmlFor="confirmpassword" className="block text-sm font-medium leading-6 text-gray-900">
+                        Conform Password
+                      </label>
+                      <input
+                        type="password"
+                        onChange={(e)=>{setconformpassword(e.target.value) }}
+                        value={conformpassword}
+                        required   
+                        placeholder="" 
+                        name="confirmpassword"
+                        id="confirmpassword"
+                        autoComplete="password"
+                        className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      />
+                    </div>
+
+
                     <div className="col-span-6 sm:col-span-3">
                       <label htmlFor="phoneno" className="block text-sm font-medium leading-6 text-gray-900">
                         Phone no
@@ -211,10 +252,11 @@ function Personalinfo(props) {
                              emailid:emailad,
                              country:countryof,
                              gender:genderof,
-                             city:cityof
+                             city:cityof,
+                             password:password
                            }
 
-                           if(datatosend.gender != "" && datatosend.fname != "" && datatosend.lname != ""  && datatosend.phno != ""&& datatosend.emailid != "" && datatosend.country != "" && datatosend.city != "")
+                           if( datatosend.password !="" && datatosend.password == conformpassword &&  datatosend.gender != "" && datatosend.fname != "" && datatosend.lname != ""  && datatosend.phno != ""&& datatosend.emailid != "" && datatosend.country != "" && datatosend.city != "")
                            {
                             console.log("datasent")
 
@@ -241,6 +283,25 @@ function Personalinfo(props) {
       });
                              props.senddatatomentorsignup(datatosend) 
                              
+                           }
+
+                           else if(datatosend.password != conformpassword)
+                           {
+
+
+                            toast.warn( "Your password does not match. try again! ", {
+      position: "top-center",
+      autoClose: 7000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      });
+
+
+
                            }
                            else  
                            {

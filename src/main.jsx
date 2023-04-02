@@ -31,7 +31,7 @@ const router = createBrowserRouter([
     element: <Loginpage/>,
   },
   {
-    path: "/mentorprofileview",
+    path: "/mentorprofileview/:profileuniqid",
     element: <Mentorprofileviewpage/>,
   },
   {

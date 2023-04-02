@@ -7,10 +7,12 @@ import { RocketLaunchIcon } from "@heroicons/react/24/solid";
 
 import { toast, ToastContainer } from 'react-toastify';
 
- 
+  //const server = "https://165.232.114.169:4100"
+  const server ="http://localhost:4100"
 
 
 export default function Example() {
+
 
 
  const [whichpage,setpage] =useState("PERSONALINFO")
@@ -23,6 +25,7 @@ export default function Example() {
 
   const [personalinfodata,setpersonalinfodata] =useState({})
   const [profilesetupdata,setprofilesetupdata] =useState({})
+  const [avaliablitydata,setavaliablitydata] =useState({})
 
 
   function infofrompersonalinfocomp(alldata)
@@ -58,6 +61,123 @@ export default function Example() {
     console.log(alldata)
 
   }
+
+  
+  function serviceandavaliablitydatafromaddservices(alldata)
+  {
+
+    setavaliablitydata(alldata)
+    console.log(alldata)
+            
+   const  serviceandavaliablitydatafromaddservicesdata = alldata         
+    pushallmentordatatodb(serviceandavaliablitydatafromaddservicesdata)
+
+
+
+
+  }   
+
+
+  function pushallmentordatatodb(avaliablityandservicesdata)
+  {   
+
+    const alldatatosend ={ "personalinfo":personalinfodata , "profiledata":profilesetupdata , "avaliablityandlistedservices":avaliablityandservicesdata    }
+           
+
+    console.log(alldatatosend)
+     
+             
+    fetch(server+"/mentorsignup", {
+     
+      // Adding method type
+      method: "POST",
+       
+      // Adding body or contents to send
+      body: JSON.stringify(alldatatosend),
+       
+      // Adding headers to the request
+      headers: {
+          "Content-type": "application/json; charset=UTF-8"
+      }
+  })
+   
+  // Converting to JSON
+  .then(response =>  response.json())
+   
+  // // Displaying results to console
+    .then((json) => { 
+      
+      console.log(json)
+
+       if (json.codeno == 0)
+       {
+
+              
+        toast.warn( "This Email-id is already associated with a Mentor Profile", {
+          position: "top-center",
+          autoClose: 7000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
+
+
+       }
+
+       else if (json.codeno == 1)
+       {
+
+
+        toast.success( "Hurray!!! Mentor Profile Created", {
+          position: "top-center",
+          autoClose: 7000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
+
+
+
+
+       }
+
+
+
+
+  
+       
+          
+          // localStorage.setItem('uname', json.emailfromserv);
+          // localStorage.setItem('pswd', json.paswdfromserv); 
+          // sessionStorage.setItem('uniqid', json.uniqueIDfromserv);
+          // sessionStorage.setItem("AUTH", "true");
+  
+           
+       
+  
+    
+    });
+  
+  
+  
+     
+
+
+
+
+
+
+
+
+  }
+
+
 
 
   return (
@@ -131,9 +251,9 @@ export default function Example() {
       
 
       {
-        <Addservicescomp fname="joshua" lname="daniel" />
         
-        // whichpage=="PERSONALINFO" ? <Personalinfocomp senddatatomentorsignup={infofrompersonalinfocomp}  /> :whichpage=="PROFILESETUP" ? <Profilesetupcomp fname={personalinfodata.fname} lname={personalinfodata.lname} ugender={personalinfodata.gender} senddatatomentorsignupnow={infofromprofilesetupcomp}  /> : whichpage=="ADDSERVICES"? <Addservicescomp/> : null 
+        
+          whichpage=="PERSONALINFO" ? <Personalinfocomp senddatatomentorsignup={infofrompersonalinfocomp}  /> :whichpage=="PROFILESETUP" ? <Profilesetupcomp fname={personalinfodata.fname} lname={personalinfodata.lname} ugender={personalinfodata.gender} senddatatomentorsignupnow={infofromprofilesetupcomp}  /> : whichpage=="ADDSERVICES"? <Addservicescomp fname={personalinfodata.fname} lname={personalinfodata.lname} sendserviceandavaliablitydatatomentorsignupnow={serviceandavaliablitydatafromaddservices} /> : null 
         
         
         

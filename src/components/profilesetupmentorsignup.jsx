@@ -109,7 +109,7 @@ function Profilesetuppage(props) {
   
   
     const [skills, setskills] = useState(  [
-      {  key:0,  id:0,     name: 'Mentoring', initials: 'ME', href: '#', members: 16, bgColor: 'bg-pink-600' },
+      {  key:0,  id:0,     name: 'Mentoring', initials: 'ME',  bgColor: 'bg-pink-600' },
       
     
     ] )
@@ -1395,7 +1395,7 @@ function Profilesetuppage(props) {
                 // [skills, setskills] = useState(  [
 
                       var toloaddata567 =   skills
-                      var temp7899 ={  key:(skills.length>0)? skills[skills.length-1].key+1 : 1,  id:(skills.length>0)? skills[skills.length-1].id+1 : 1,     name: skillstoupdate, initials: skillstoupdate.slice(0, 2).toUpperCase() , href: '#', members: 16, bgColor: colorsforskills[Math.floor(Math.random() * (4))] }
+                      var temp7899 ={  key:(skills.length>0)? skills[skills.length-1].key+1 : 1,  id:(skills.length>0)? skills[skills.length-1].id+1 : 1,     name: skillstoupdate, initials: skillstoupdate.slice(0, 2).toUpperCase() ,   bgColor: colorsforskills[Math.floor(Math.random() * (4))] }
                       toloaddata567.push(temp7899)
                       //Math.floor(Math.random() * (max - min + 1)) + min
                       setskills([...toloaddata567])

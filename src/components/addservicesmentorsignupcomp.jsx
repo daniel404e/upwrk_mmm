@@ -1,26 +1,31 @@
 import React, { useState , useEffect ,Fragment, useRef} from 'react';
 import countries from '../data/countries.json'
+import timezoneslist from '../data/timezones.json'
+import timeinday from "../data/timeinday.json"
 import currencydata from '../data/currency.json'
 import { toast, ToastContainer } from 'react-toastify';
-import { VideoCameraIcon ,ChatBubbleBottomCenterIcon  , PhotoIcon, UserCircleIcon ,XMarkIcon ,EnvelopeIcon , CheckCircleIcon} from "@heroicons/react/24/solid";
+import { VideoCameraIcon ,ChatBubbleBottomCenterIcon  , PhotoIcon, UserCircleIcon,CheckIcon, ChevronUpDownIcon  ,XMarkIcon ,EnvelopeIcon , CheckCircleIcon ,CalendarIcon, MapPinIcon, UsersIcon} from "@heroicons/react/24/solid";
+import { PlusIcon } from '@heroicons/react/20/solid'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCoffee,faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons'
-import { Dialog, Transition } from '@headlessui/react'
+import { Dialog, Transition ,Combobox} from '@headlessui/react'
+ 
 import  axios from 'axios'
 
 
+//toadd/change---1) prevent overlap in date timeframe
+//               2)prevent negative date timeframe selection 
 
-const exchangeratesapikey = "KYYZLE5fNxoCAh6op6VN1ovfMRhf8yU5";
+ 
 
+const people =  timezoneslist
 
  
 
 
-
-
-
-
-
+function classNames(...classes) {
+  return classes.filter(Boolean).join(' ')
+}
  
 
 
@@ -29,11 +34,226 @@ const exchangeratesapikey = "KYYZLE5fNxoCAh6op6VN1ovfMRhf8yU5";
  {
 
 
+  useEffect(() => {
+    window.scrollTo(0,0)
+  },[])
+
+
+
+   const [query, setQuery] = useState('')
+  const [selectedtimezone, setselectedtimezone] = useState(null)
+
+  const filteredPeople =
+    query === ''
+      ? people
+      : people.filter((person) => {
+          return person.value.toLowerCase().includes(query.toLowerCase())
+        })
+
+
+
+
+
+
+
   const [modelimgscr,             setmodelimgscr] = useState("")
   const [modeltitle,              setmodeltitle] = useState("");
   const [modelcontent,            setmodelcontent] = useState('');
   const [modeltypeofservice,      setmodeltypeofservice] = useState('');
   const [modeldurationofservice,  setmodeldurationofservice] = useState('');
+
+
+
+
+  var defaultdropdownvalue= [
+  {fromtime:"" , totime:"" },
+  {fromtime:"" , totime:"" },
+  {fromtime:"" , totime:"" },
+  {fromtime:"" , totime:"" },
+  {fromtime:"" , totime:"" },
+  {fromtime:"" , totime:"" },
+  {fromtime:"" , totime:"" }
+ 
+ ]
+
+ var  dropdownsval=  defaultdropdownvalue
+
+
+
+     function handledropdownvaluechange(idtoget,valuetochange)
+     {
+         const whichdrpdown = Math.floor(idtoget/10)
+             
+         if(whichdrpdown == 1)
+         {
+            const idtochange= idtoget-10
+          dropdownsval[idtochange-1].fromtime=valuetochange
+
+         }
+
+         if(whichdrpdown == 2)
+         {
+          const idtochange= idtoget-20
+          dropdownsval[idtochange-1].totime=valuetochange
+
+         }
+
+
+
+         console.log(dropdownsval)
+
+
+
+
+     }
+         
+      function handledeleteavaliablitytime(indexofarray,idofarray)
+      {
+
+
+
+        const toloaddatum1 =  avaliablitystate
+
+           
+          toloaddatum1[idofarray-1].avaliablity.splice( indexofarray,1)
+           
+       
+           
+          setavaliablitystate([...toloaddatum1])
+
+
+
+
+
+
+
+      }
+
+      
+
+  
+
+
+
+  const [avaliablitystate , setavaliablitystate] = useState( [
+    {
+      id: 1,
+      title: 'Saturday',
+      
+      avaliablity:[    ],
+      avaliable: true
+   
+    },
+    {
+      id: 2,
+      title: 'Sunday',
+      
+      avaliablity:[    ],
+      avaliable: true
+   
+    },
+    {
+      id: 3,
+      title: 'Monday',
+       
+      avaliablity:[    ] ,
+      avaliable: true
+     
+    },
+    {
+      id: 4,
+      title: 'Tuesday',
+       
+      avaliablity:[    ],
+      avaliable: true
+   
+    },
+    {
+      id: 5,
+      title: 'Wednesday',
+       
+      avaliablity:[   ],
+      avaliable: true
+     
+    },
+    {
+      id: 6,
+      title: 'Thursday',
+       
+      avaliablity:[    ],
+      avaliable: true
+     
+    },
+    {
+      id: 7,
+      title: 'Friday',
+      
+      avaliablity:[   ],
+      avaliable: true
+   
+    },
+   
+  ]
+  )
+
+  function handleapplytoall(idtoapplyall)
+  {
+    const toloaddatum2 = avaliablitystate
+    
+    const toapplyallarray = toloaddatum2[idtoapplyall-1].avaliablity
+    
+    console.log("inapplyall")
+
+    toloaddatum2.forEach((element,indx) => {
+       
+      toloaddatum2[indx].avaliablity = [...toapplyallarray]
+
+      
+       
+ 
+    });
+
+    console.log(toloaddatum2)
+
+
+
+    setavaliablitystate([...toloaddatum2])
+ 
+  }
+
+
+  function handleaddavaliabletime(idtoadd)
+  {
+    if (dropdownsval[idtoadd-1].fromtime && dropdownsval[idtoadd-1].totime){
+
+    const toloadupdatum =  avaliablitystate
+       
+    toloadupdatum[idtoadd-1].avaliable =true 
+
+    toloadupdatum[idtoadd-1].avaliablity.push(dropdownsval[idtoadd-1]   )
+     
+    setavaliablitystate([...toloadupdatum ])
+    dropdownsval=  defaultdropdownvalue
+    }
+
+  }
+
+
+
+  function changeavaliablestate(valueofday,idofday)
+  {
+
+    const toloadupdatum =  avaliablitystate
+       
+    toloadupdatum[idofday-1].avaliable =valueofday 
+
+     console.log(valueofday +" "+ idofday)
+   setavaliablitystate([...toloadupdatum])    
+       
+
+
+
+  }
  
 
 
@@ -129,7 +349,7 @@ const exchangeratesapikey = "KYYZLE5fNxoCAh6op6VN1ovfMRhf8yU5";
   const [services, setservices] = useState([
     
     
-    {id:0,servicetitle:"1:1 Meet With ME",typeofservice:"Video Conferencing",durationinminutes:"45 Min",priceofservice:"999",contentofservice:"Hello Everybody " ,currencyofservice:"INR",currencysymbol:"\u20B9" ,imgscr:"https://images.unsplash.com/photo-1484807352052-23338990c6c6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" ,imagesrcfileid:""  },
+    {id:0,servicetitle:"1:1 Meet With ME",typeofservice:"Video Conferencing",durationinminutes:"45 Min",priceofservice:"999",contentofservice:"Get a 1:1 meeting with me now. " ,currencyofservice:"INR",currencysymbol:"\u20B9" ,imgscr:"https://images.unsplash.com/photo-1484807352052-23338990c6c6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" ,imagesrcfileid:""  },
   
   
   ])
@@ -988,131 +1208,356 @@ currencydata.forEach(element => {
 
       
 <div className="mt-10 sm:mt-0" >
+
 <div className="md:grid md:grid-cols-3 md:gap-6">
+
           <div className="md:col-span-1">
+          
             <div className="px-4 sm:px-0">
               <h3 className="text-base font-semibold leading-6 text-gray-900">Add Avaliablity</h3>
-              <p className="mt-1 text-sm text-gray-600">Add your avaliablity.</p>
+              <p className="mt-1 text-sm text-gray-600">Add your avaliablity Here.</p>
             </div>
           </div>
           <div className="mt-5 md:col-span-2 md:mt-0">
-            <form action="#" method="POST">
+          
+             
               <div className="overflow-hidden shadow rounded-md">
-                <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
-                  <fieldset>
-                    <legend className="sr-only">By Email</legend>
-                    <div className="text-sm font-semibold leading-6 text-gray-900" aria-hidden="true">
-                      By Email
-                    </div>
-                    <div className="mt-4 space-y-4">
-                      <div className="flex items-start">
-                        <div className="flex h-6 items-center">
-                          <input
-                            id="comments"
-                            name="comments"
-                            type="checkbox"
-                            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                          />
-                        </div>
-                        <div className="ml-3 text-sm leading-6">
-                          <label htmlFor="comments" className="font-medium text-gray-900">
-                            Comments
-                          </label>
-                          <p className="text-gray-500">Get notified when someones posts a comment on a posting.</p>
-                        </div>
-                      </div>
-                      <div className="flex items-start">
-                        <div className="flex h-6 items-center">
-                          <input
-                            id="candidates"
-                            name="candidates"
-                            type="checkbox"
-                            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                          />
-                        </div>
-                        <div className="ml-3 text-sm leading-6">
-                          <label htmlFor="candidates" className="font-medium text-gray-900">
-                            Candidates
-                          </label>
-                          <p className="text-gray-500">Get notified when a candidate applies for a job.</p>
-                        </div>
-                      </div>
-                      <div className="flex items-start">
-                        <div className="flex h-6 items-center">
-                          <input
-                            id="offers"
-                            name="offers"
-                            type="checkbox"
-                            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                          />
-                        </div>
-                        <div className="ml-3 text-sm leading-6">
-                          <label htmlFor="offers" className="font-medium text-gray-900">
-                            Offers
-                          </label>
-                          <p className="text-gray-500">Get notified when a candidate accepts or rejects an offer.</p>
-                        </div>
-                      </div>
-                    </div>
-                  </fieldset>
-                  <fieldset>
-                    <legend className="contents text-sm font-semibold leading-6 text-gray-900">
-                      Push Notifications
-                    </legend>
-                    <p className="text-sm text-gray-500">These are delivered via SMS to your mobile phone.</p>
-                    <div className="mt-4 space-y-4">
-                      <div className="flex items-center">
-                        <input
-                          id="push-everything"
-                          name="push-notifications"
-                          type="radio"
-                          className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                        />
-                        <label
-                          htmlFor="push-everything"
-                          className="ml-3 block text-sm font-medium leading-6 text-gray-900"
-                        >
-                          Everything
-                        </label>
-                      </div>
-                      <div className="flex items-center">
-                        <input
-                          id="push-email"
-                          name="push-notifications"
-                          type="radio"
-                          className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                        />
-                        <label htmlFor="push-email" className="ml-3 block text-sm font-medium leading-6 text-gray-900">
-                          Same as email
-                        </label>
-                      </div>
-                      <div className="flex items-center">
-                        <input
-                          id="push-nothing"
-                          name="push-notifications"
-                          type="radio"
-                          className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                        />
-                        <label
-                          htmlFor="push-nothing"
-                          className="ml-3 block text-sm font-medium leading-6 text-gray-900"
-                        >
-                          No push notifications
-                        </label>
-                      </div>
-                    </div>
-                  </fieldset>
+              
+                <div className=" bg-white px-4 py-5 sm:p-6">
+
+                 <h2 className="text-base font-semibold leading-7 text-gray-900 mb-4">Add your Timezone</h2>
+          
+                           
+                           {/* //////////////////////////////timezone-combobox//////////////////////////////////////////////////////////// */}
+                         <div className='flex relative justify-start ml-2'>
+                            <Combobox as="div" value={selectedtimezone} onChange={(e)=>{
+                              
+                              setselectedtimezone(e)
+                              
+                              }}>
+      <Combobox.Label className="block text-sm font-medium leading-6 text-gray-900">Please choose the prefered timezone.</Combobox.Label>
+      <div className="relative mt-2">
+        <Combobox.Input
+          className="w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          onChange={(event) => setQuery(event.target.value)}
+          displayValue={(person) => person?.value}
+        />
+        <Combobox.Button className="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
+          <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+        </Combobox.Button>
+
+        {filteredPeople.length > 0 && (
+          <Combobox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+            {filteredPeople.map((person) => (
+              <Combobox.Option
+                key={person.value + person.abbr}
+                value={person}
+                className={({ active }) =>
+                  classNames(
+                    'relative cursor-default select-none py-2 pl-3 pr-9',
+                    active ? 'bg-indigo-600 text-white' : 'text-gray-900'
+                  )
+                }
+              >
+                {({ active, selected }) => (
+                  <>
+                    <span className={classNames('block truncate', selected && 'font-semibold')}>{person.value}</span>
+
+                    {selected && (
+                      <span
+                        className={classNames(
+                          'absolute inset-y-0 right-0 flex items-center pr-4',
+                          active ? 'text-white' : 'text-indigo-600'
+                        )}
+                      >
+                        <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                      </span>
+                    )}
+                  </>
+                )}
+              </Combobox.Option>
+            ))}
+          </Combobox.Options>
+        )}
+      </div>
+    </Combobox>
+    </div>
+    <h2 className="text-base font-semibold leading-7 text-gray-900 mt-6 mb-2">Add your Weekly Avaliablity</h2>
+                           {/* //////////////////////////////////timezone-combobox///////////////////////////////////////////////////////// */}
+                 
+                 {/* ///////////////////////////////////////////////////////////////////////////// */}
+                 <div className="overflow-x-auto bg-white shadow sm:rounded-md">
+
+                 
+                 
+      <ul role="list" className="divide-y   divide-gray-200">
+        {avaliablitystate.map((position) => (
+          <li key={position.id}   > 
+            <a key={position.title}  className="block hover:bg-gray-50" >
+           
+              <div  className="px-4 py-4 sm:px-6" >
+
+              <div className='flex text-xs relative  justify-end ' style={{marginRight:"33px"}}>
+                 <button className='font-medium text-indigo-600 mb-1 hover:text-indigo-800'
+                 id={position.id}
+                 onClick={(e)=>{
+                  console.log("ooolllloooo")
+                  
+                  
+                   handleapplytoall(e.target.id)  }}
+
+
+                 >Apply to All</button>
+            </div>
+                 
+             
+
+              
+                <div className="flex   justify-between mb-2"  >
+                   <div className="flex items-center  "> 
+                   
+            <input
+              id={position.id}
+              aria-describedby="comments-description"
+              name="comments"
+              type="checkbox"
+              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600 mr-1 " 
+              checked={position.avaliable}
+              onChange={(e)=>{
+                
+                console.log(e)
+                 changeavaliablestate(e.target.checked , e.target.id)
+                 
+                   }}
+              
+            />
+         
+                  <p className="truncate text-sm font-medium text-indigo-600" style={(position.avaliable)? {opacity: 1}:{opacity: 0.6}} >{position.title}</p>
+                     </div>
+                
+                  <div className="flex items-center  ">
+                   
+                 <div className="  flex flex-shrink-0  " style={(position.avaliable)? {opacity: 1}:{opacity: 0.4}}>
+                 
+                 <div>
+                 
+       <select
+         id={position.id + 10}
+         key="blahblah"
+         
+         className="  block  rounded-md border-0 py-1 pl-1 pr-1 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
+         style={{width:"75px"}}
+         onChange={(e)=>{handledropdownvaluechange(e.target.id,e.target.value) }}
+       >
+       {
+        timeinday.map((houreinday,idd)=>(
+         
+         <option key={houreinday.standard_format +"-"+ houreinday.time_of_day} >{houreinday.standard_format +" "+ houreinday.time_of_day}</option>
+       
+        ))
+       }
+       </select>
+     </div>
+           -
+     <div>
+        
+        <select
+          id={position.id + 20}
+         key="blahblahblah"
+         onChange={(e)=>{handledropdownvaluechange(e.target.id,e.target.value)}}
+          className="  block  rounded-md border-0 py-1 pl-1 pr-1 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          style={{width:"75px"}}
+        >
+         {
+          timeinday.map((houreinday,idd)=>(
+         
+         <option  key={houreinday.standard_format +"+"+ houreinday.time_of_day} >{houreinday.standard_format +" "+ houreinday.time_of_day}</option>
+       
+        ))
+
+         }
+          
+        </select>
+      </div>
+ 
+     </div> 
+
+     <button
+        type="button"
+        value={position.id}
+        className="rounded-full bg-indigo-600 p-0.5 ml-1 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        onClick={(e)=>{handleaddavaliabletime(e.target.value)}}
+      >
+        <PlusIcon className="h-5 w-5" aria-hidden="true" style={{pointerEvents:"none"}} />
+      </button>
+                 </div>
+                  
+                </div>
+
+                <div className="flex items-center justify-center overflow-y-auto " style={(position.avaliable)? {opacity: 1}:{opacity: 0.4}} >
+                  
+                  {position.avaliablity.map((availabletime,index)=>(
+                  <div className="ml-1 flex relative flex-shrink-0  "  >
+                    <p className="inline-flex  relative rounded-md bg-green-100 px-1 py-1 text-xs font-semibold  text-green-800">
+                          {availabletime.fromtime+"-"+availabletime.totime}
+                           
+                          <button
+                      type="button"
+                      value={index}
+                      id={position.id}
+                    
+                       
+                      className="ml-1 inline-flex h-4 w-4 flex-shrink-0 rounded-full p-1 text-gray-400 hover:bg-gray-300 hover:text-gray-500"
+                       
+                      onClick={(e)=>{
+                         
+                       console.log(e)
+
+                       handledeleteavaliablitytime(e.target.value,e.target.id)
+
+
+                       
+                          
+                      
+
+                       }}  
+                    >
+                       
+                      <svg className="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8" style={{pointerEvents:"none"  }}>
+                        <path strokeLinecap="round" strokeWidth="1.5" d="M1 1l6 6m0-6L1 7" style={{pointerEvents:"none" }}/>
+                      </svg>
+                    </button>
+
+                    </p>
+                    
+                  
+                  </div>
+                  ))
+                  }
+                
+                </div>
+
+
+                
+
+                 
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+                 {/* ///////////////////////////////////////////////////////////////////////////// */}
+                  
                 </div>
                 <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
                   <button
                     type="submit"
                     className="inline-flex justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-                  >
+                    
+                    onClick={()=>{
+
+                       var leastavaliablity=0
+                         avaliablitystate.forEach(element => {
+                              if(element.avaliable == true)
+                              {
+                                if(element.avaliablity.length > 0)
+                                {
+                                  leastavaliablity = leastavaliablity +1
+
+                                }
+
+                              }
+                        
+                         });
+                            
+                            
+                        
+                           
+                        if(services.length > 0 && leastavaliablity >0 && selectedtimezone != null )
+                        {   
+                      var tosenddata={
+                       
+                       serviceslisted:services,
+                       avaliablityandtimezone:{weeklyavaliablity:avaliablitystate , timezonedata:selectedtimezone         }
+
+
+                      }
+
+                      props.sendserviceandavaliablitydatatomentorsignupnow(tosenddata)
+
+                        }
+
+                        else if(services.length <= 0)
+                        {
+
+                          toast.warn( "Atleast One Service must be added! ", {
+                              position: "top-center",
+                              autoClose: 5000,
+                              hideProgressBar: false,
+                              closeOnClick: true,
+                              pauseOnHover: true,
+                              draggable: true,
+                              progress: undefined,
+                              theme: "light",
+                              });
+
+                        }
+                        else if(leastavaliablity == 0)
+                        {
+                          toast.warn( "Avaliablity cannot be empty! ", {
+                              position: "top-center",
+                              autoClose: 5000,
+                              hideProgressBar: false,
+                              closeOnClick: true,
+                              pauseOnHover: true,
+                              draggable: true,
+                              progress: undefined,
+                              theme: "light",
+                              });
+
+                        }
+
+                        else if(selectedtimezone == null)
+                        {
+
+                          toast.warn( "Timezone cannot be empty! ", {
+                              position: "top-center",
+                              autoClose: 5000,
+                              hideProgressBar: false,
+                              closeOnClick: true,
+                              pauseOnHover: true,
+                              draggable: true,
+                              progress: undefined,
+                              theme: "light",
+                              });
+
+                        }
+                        else 
+                        {
+                          toast.error( "Error!", {
+                              position: "top-center",
+                              autoClose: 5000,
+                              hideProgressBar: false,
+                              closeOnClick: true,
+                              pauseOnHover: true,
+                              draggable: true,
+                              progress: undefined,
+                              theme: "light",
+                              });
+                          
+                        }
+
+
+                    }}
+                  
+                  
+                     >
                     Next
                   </button>
                 </div>
               </div>
-            </form>
+             
           </div>
         </div>
       </div>
