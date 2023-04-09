@@ -1,12 +1,13 @@
-import { Outlet, Link } from "react-router-dom";
+ 
 import React, { useState , useEffect ,Fragment, useRef} from 'react';
 import { useParams } from "react-router";
 import { VideoCameraIcon ,ChatBubbleBottomCenterIcon  , PhotoIcon, UserCircleIcon,CheckIcon, ChevronUpDownIcon  ,XMarkIcon ,EnvelopeIcon , CheckCircleIcon ,CalendarIcon, MapPinIcon, UsersIcon} from "@heroicons/react/24/solid";
 import { Dialog, Transition ,Combobox} from '@headlessui/react'
 import { ChevronLeftIcon, ChevronRightIcon  } from '@heroicons/react/20/solid'
+import { Outlet, Link , redirect ,Navigate, Route, Routes, useNavigate  } from "react-router-dom";
 import timezoneslist from '../data/timezones.json'
  import dayjs  from  'dayjs'
-
+ import { toast, ToastContainer } from 'react-toastify';
  import customParseFormat from 'dayjs/plugin/customParseFormat'
  import relativeTime  from  'dayjs/plugin/relativeTime'
  
@@ -22,7 +23,15 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-const month = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+
+
+ 
+
+
+function Mentorprofileviewpage() {
+
+  const month = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 const datesarray =[]
 const selectedmatrix =[]
@@ -51,10 +60,12 @@ for (let index = 0; index < 20; index++) { //for 20 days from now
 console.log(datesarray)
 
 
- 
 
 
-function Mentorprofileviewpage() {
+
+
+
+
   const [selectedmatrixstate,setselectedmatrixstate] = useState(selectedmatrix)
   const [modaltitle2,              setmodaltitle2] = useState("");
   const [modalcontent2,            setmodalcontent2] = useState([]);
@@ -64,6 +75,7 @@ function Mentorprofileviewpage() {
   const[selectedtimebutton , setselectedtimebutton] = useState(null);
   const[selectedtimebuttonvalue , setselectedtimebuttonvalue] = useState(null);
   const[currentopenserviceforknowmore ,setcurrentopenserviceforknowmore] = useState(null);
+  const[blockeddatesarray,setblockeddatesarray]=useState(null)
   //const server = "https://165.232.114.169:4100"
   const server ="http://localhost:4100"
 
@@ -76,7 +88,7 @@ function Mentorprofileviewpage() {
 
   const [avaliablitystate,setavaliablitystate] = useState({})
   const [open, setOpen] = useState(false)
-
+  const navigate = useNavigate();
   const [open2, setOpen2] = useState(false)
 
   const cancelButtonRef = useRef(null)
@@ -109,7 +121,249 @@ function Mentorprofileviewpage() {
 
 
     
+  
+  function calculateutctimeplusoffset( offset) {
+    // create Date object for current location
+    var d = new Date();
+
+    // convert to msec
+    // subtract local time zone offset
+    // get UTC time in msec
+    var utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+
+    // create new Date object for different city
+    // using supplied offset
+    var nd = new Date(utc + (3600000*offset));
+
+    // return time as a string
+    return   nd.toLocaleString();
+}
+
+
+function currentdatetimeintimezone(wantedtimezone)
+{
+
+  var offset1 =0
+
+  timezoneslist.forEach((element,inddx) => {
+
+
+    if(element.value == wantedtimezone)
+    {
+      offset1 = element.offset    
+
+    }
+
+
+
+    
+
+
+
+
+    
+  })
+
+
+  return(calculateutctimeplusoffset(offset1))
+
+
+
+
+
+}
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function removeblockeddates(selectedweekdayavaliablityvar ,dateanddetailsvar ,selectedclienttzonevar,blockeddatearrayvar  )
+{
+
+const convertedselectedweekdayavaliablityafterblockeddate =  selectedweekdayavaliablityvar
+
+function findoffsetbetweentimezones3(mentorprofiletzne,choosentzne)
+{
+
+  
+  var  offset=0;
+  timezoneslist.forEach((element,index) => {
+         
+   
+               
+        if(element.value == mentorprofiletzne)
+        {
+          offset = offset+ ( element.offset * (-1))
+
+        }
+
+        if(element.value == choosentzne)
+        {
+          offset = offset + element.offset 
+
+        }
+                
+
+    
+                          });
+
+
+
+                          return(offset)
+
+
+
+
+                        }
+
  
+   
+
+blockeddatearrayvar.forEach((element1,indxx1) => {  //loops thorough all blocked dates
+            
+
+  const  totaloffset=  findoffsetbetweentimezones3(element1.timezone,selectedclienttzonevar) 
+  const totaloffsetinminutes = totaloffset *60
+  // console.log("offset: "+totaloffsetinminutes )
+
+  
+
+
+ if(element1.datetime.length > 0){
+  element1.datetime.forEach((element2,indxx2) => { // loops through all the times in the blocked dates
+
+
+       var fromdatetimeinblockeddates =  dayjs( element2.fromdatetime,"DD-MM-YYYY_hh:mm A").add(totaloffsetinminutes,"minute").format("DD-MM-YYYY") //converted to selected timezone 
+       
+       var fromdatetimeinselecteddate = dayjs(dateanddetailsvar.date,"M/D/YYYY").format("DD-MM-YYYY")
+                
+           const f = dayjs( element2.fromdatetime,"DD-MM-YYYY_hh:mm A").add(totaloffsetinminutes,"minute").format("hh:mm a") 
+           const t = dayjs( element2.todatetime,"DD-MM-YYYY_hh:mm A").add(totaloffsetinminutes,"minute").format("hh:mm a")
+
+           if(fromdatetimeinblockeddates == fromdatetimeinselecteddate)   //if blocked date == selected date [overlap might exist] 
+           {
+
+              
+
+             
+            for (let indxx3 = 0; indxx3 < convertedselectedweekdayavaliablityafterblockeddate.avaliablity.length; indxx3++)  
+ 
+              {
+                const element3 = convertedselectedweekdayavaliablityafterblockeddate.avaliablity[indxx3];
+
+
+
+              const fa = dayjs( element3.fromtime,"hh:mm a").format("hh:mm a") 
+              const ta = dayjs( element3.totime,"hh:mm a").format("hh:mm a")
+
+
+              const fminusfa = dayjs( f,"hh:mm a").diff( dayjs(fa,"hh:mm a"), 'minute')
+              const tminusfa = dayjs( t,"hh:mm a").diff( dayjs(fa,"hh:mm a"), 'minute')
+              const fminusta = dayjs( f,"hh:mm a").diff( dayjs(ta,"hh:mm a"), 'minute')
+              const tminusta = dayjs( t,"hh:mm a").diff( dayjs(ta,"hh:mm a"), 'minute')
+              
+                
+            
+
+
+              if(fminusfa < 0 && (tminusfa <= 0 ) || (fminusta >= 0 ) && (tminusta >0) ) //no overlap exists
+              {    
+                
+                   console.log("no overlap exists")
+              }
+
+              else if(fminusfa <= 0 && tminusta < 0)
+              {
+                var splitdatum ={
+                    "fromtime":  t,
+                    "totime":  ta
+                }
+
+                 
+                convertedselectedweekdayavaliablityafterblockeddate.avaliablity[indxx3] =splitdatum
+                 indxx3 = 0
+                console.log("left end overlap exists")
+                console.log(convertedselectedweekdayavaliablityafterblockeddate)
+                  
+              }
+              else if(fminusfa > 0 && tminusta < 0)
+              {   
+
+                var splitdatum2 ={
+                    "fromtime":  fa,
+                    "totime":  f
+                }
+                
+                var splitdatum25 ={
+
+                    "fromtime":  t,
+                    "totime":  ta
+
+                }
+
+                 
+                convertedselectedweekdayavaliablityafterblockeddate.avaliablity[indxx3] =splitdatum2
+                convertedselectedweekdayavaliablityafterblockeddate.avaliablity.push(splitdatum25)
+                indxx3 = 0
+                console.log("middle enclosed overlap exists")
+                console.log(convertedselectedweekdayavaliablityafterblockeddate)
+
+              }
+              else if(fminusfa > 0 && tminusta >= 0)
+              {
+
+                var splitdatum3 ={
+                    "fromtime":  fa,
+                    "totime":  f
+                }
+
+                
+                convertedselectedweekdayavaliablityafterblockeddate.avaliablity[indxx3] =splitdatum3
+                 indxx3 = 0
+                 console.log("right end overlap exists")
+                console.log(convertedselectedweekdayavaliablityafterblockeddate)
+              
+
+              }
+              else if(fminusfa <= 0 && tminusta >= 0)
+              {  
+
+                convertedselectedweekdayavaliablityafterblockeddate.avaliablity.splice(indxx3,1)  
+                console.log(indxx3)
+                 indxx3 = -1    
+                 console.log(convertedselectedweekdayavaliablityafterblockeddate)
+                 console.log("complete overlap exists")
+              
+
+              }
+               
+               
+            
+           };
+    
+          }
+      
+});
+}
+
+  
+});
+
+
+ 
+
+
+return(convertedselectedweekdayavaliablityafterblockeddate)
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
 
 
   useEffect(() => {
@@ -142,13 +396,79 @@ function Mentorprofileviewpage() {
     .then((json) => { 
            
       console.log(json)
+      console.log("this is timezone" )
+
+
+       
+
+
+      fetch(server+"/getblockeddates", {
+     
+        // Adding method type
+        method: "POST",
+         
+        // Adding body or contents to send
+        body: JSON.stringify({ mentoruniqid: profileuniqid  , fromdate: dayjs(currentdatetimeintimezone(json[0].avaliablityandlistedservices.avaliablityandtimezone.timezonedata.value),"M/D/YYYY, H:mm:s A" ).format('YYYY-MM-DD') }),
+         
+        // Adding headers to the request
+        headers: {
+            "Content-type": "application/json; charset=UTF-8"
+        }
+    })
+     
+    // Converting to JSON
+    .then(response12 =>  response12.json())
+     
+    // // Displaying results to console
+      .then((json12) => {   
+
+
+        setblockeddatesarray(json12)
+
+
+
+      })
+
+
 
     
       setservices(json[0].avaliablityandlistedservices.serviceslisted)
       setavaliablitystate(json[0].avaliablityandlistedservices.avaliablityandtimezone.weeklyavaliablity)
       setmentortzone(json[0].avaliablityandlistedservices.avaliablityandtimezone.timezonedata.value) 
-      setselectedtzone(json[0].avaliablityandlistedservices.avaliablityandtimezone.timezonedata.value)  
+      
       console.log(json[0].avaliablityandlistedservices.avaliablityandtimezone.weeklyavaliablity)
+
+
+       
+        var temponce = null
+      timezoneslist.forEach((element,index) => {
+                
+               
+        if(element.utc.includes(String(Intl.DateTimeFormat().resolvedOptions().timeZone)))
+        {
+                    
+          temponce = element.value
+        }
+
+             
+
+    
+      });
+
+
+      if(temponce != null)
+      {
+
+        setselectedtzone(temponce)
+
+        console.log("set time zone is :::: "+temponce)
+      }
+
+      else{
+        setselectedtzone(json[0].avaliablityandlistedservices.avaliablityandtimezone.timezonedata.value)  
+      }
+
+    
 
 
       
@@ -157,6 +477,44 @@ function Mentorprofileviewpage() {
 
 
   },[])
+
+
+  
+
+
+  function findoffsetbetweentimezonespublic(mentorprofiletzne,choosentzne)
+  {
+  
+    
+    var  offset=0;
+    timezoneslist.forEach((element,index) => {
+           
+     
+                 
+          if(element.value == mentorprofiletzne)
+          {
+            offset = offset+ ( element.offset * (-1))
+  
+          }
+  
+          if(element.value == choosentzne)
+          {
+            offset = offset + element.offset 
+  
+          }
+                  
+  
+      
+                            });
+  
+  
+  
+                            return(offset)
+  
+  
+  
+  
+                          }
 
 
   function  convertavaliablitytotimezone(weeklyavaliablity ,mentorprofiletimezone ,choosentimezone)
@@ -656,11 +1014,22 @@ function Mentorprofileviewpage() {
                               }
   
                                       });
-
+                           
+                                      
                           var selectedweekdayavaliablity = convertavaliablitytotimezone(avaliablitystate, mentortzone , selectedtzone)[indexweneed2]
-                          console.log(selectedweekdayavaliablity)
+                           selectedweekdayavaliablity=removeblockeddates(selectedweekdayavaliablity , datesarray[indexweneed] , selectedtzone ,blockeddatesarray)
+                       
                        var dateanddetails = datesarray[indexweneed]
-                                                          
+                       console.log("dateanddetails")
+                       console.log(dateanddetails )
+                       console.log("selectedweekdayavaliablity")
+                       console.log(selectedweekdayavaliablity)
+                       console.log(selectedtzone)
+                       console.log("blocked dates")
+                       console.log(blockeddatesarray)
+                          //convert booked(blocked) time from mentortzone to selected-tzone
+                          // foreach datedetaisl foreach blockeddate   if(datedetails == blokeddates.dayjs(datetime))\
+                          //detectoverlap and minus                                
 
 
                        
@@ -882,9 +1251,17 @@ function Mentorprofileviewpage() {
   
                                       });
 
-                      // var selectedweekdayavaliablity = avaliablitystate[indexweneed2]
+                       
                        var selectedweekdayavaliablity = convertavaliablitytotimezone(avaliablitystate, mentortzone , selectedtzone)[indexweneed2]
+                       selectedweekdayavaliablity=removeblockeddates(selectedweekdayavaliablity , datesarray[indexweneed] , selectedtzone ,blockeddatesarray)
                        var dateanddetails = datesarray[indexweneed]
+                       console.log("dateanddetails")
+                       console.log(dateanddetails )
+                       console.log("selectedweekdayavaliablity")
+                       console.log(selectedweekdayavaliablity)
+                       console.log(selectedtzone)
+                       console.log("blocked dates")
+                       console.log(blockeddatesarray)
                                                           
 
 
@@ -1009,6 +1386,15 @@ selectedmatrixstate.forEach((element,index) => {
 
                           });
           var selectedweekdayavaliablity = convertavaliablitytotimezone(avaliablitystate, mentortzone , e.target.value)[indexweneed2]
+          selectedweekdayavaliablity=removeblockeddates(selectedweekdayavaliablity , datesarray[indexweneed] , e.target.value ,blockeddatesarray)
+          console.log("dateanddetails")
+                       console.log(datesarray[indexweneed] )
+                       console.log("selectedweekdayavaliablity")
+                       console.log(selectedweekdayavaliablity)      
+                       console.log(e.target.value)
+                       console.log("blocked dates")
+                       console.log(blockeddatesarray)
+
           const durationofss = Number(services[modalserviceid].durationinminutes.slice(0, -3)) //duration of selected service
                       const timechunks =[]
                                  
@@ -1082,7 +1468,7 @@ selectedmatrixstate.forEach((element,index) => {
         id={indxz}
         key={indxz}
         disabled={ (dayjs( elementz, "hh:mm A"  ).diff( dayjs( String(new Date().toLocaleTimeString(undefined, { hour:   '2-digit', minute: '2-digit'})), "hh:mm A"  ) , 'minute') < 30 && selectedmatrixstate[0].selected == true  )? true : false}
-        className={(dayjs( elementz, "hh:mm A"  ).diff( dayjs( String(new Date().toLocaleTimeString(undefined, { hour:   '2-digit', minute: '2-digit'})), "hh:mm A"  ) , 'minute') < 30  && selectedmatrixstate[0].selected == true )?   "opacity-50 transition-all   duration-300 rounded-full bg-white mx-1 my-1 px-2.5 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-red-500 hover:bg-red-100" : (selectedtimebutton == indxz )? "rounded-full transition-all   duration-3 00 bg-green-400 mx-1 my-1 px-2.5 py-1 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-green-300     " : "rounded-full transition-all   duration-500 bg-white mx-1 my-1 px-2.5 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-green-300 hover:bg-green-50 focus:bg-green-500 " }
+        className={(dayjs( elementz, "hh:mm A"  ).diff( dayjs( String(new Date().toLocaleTimeString(undefined, { hour:   '2-digit', minute: '2-digit'})), "hh:mm A"  ) , 'minute') < 30  && selectedmatrixstate[0].selected == true )?   "opacity-50   rounded-full bg-white mx-1 my-1 px-2.5 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-red-500 " : (selectedtimebutton == indxz )? "rounded-full transition-all   duration-3 00 bg-green-400 mx-1 my-1 px-2.5 py-1 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-green-300     " : "rounded-full transition-all   duration-500 bg-white mx-1 my-1 px-2.5 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-green-300 hover:bg-green-50 focus:bg-green-500 " }
            value={elementz}
            onClick={(e)=>{
             
@@ -1162,13 +1548,153 @@ selectedmatrixstate.forEach((element,index) => {
                     className= {(selectedtimebutton != null)? " motion-safe:animate-pulse inline-flex w-full justify-center rounded-md bg-green-400 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-green-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500" : "  inline-flex w-full justify-center rounded-md bg-green-500 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-green-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"  }
                     disabled={(selectedtimebuttonvalue != null)? false : true  }
                     onClick={()=>{
+
+              
+ 
+
+                                 
+                                 if(sessionStorage.getItem("uniqid"))   //this is if user is already logged in 
+                                 {  
+
+                                  var  indexweneed=0;
+
+                                     selectedmatrixstate.forEach((element,index) => {
+          
+                                           if(element.selected)
+                                           {
+                                             indexweneed = index  
+                                 
+                                           }
+                                                          });
+                                 
+                                                          var dateanddetails2 = datesarray[indexweneed]
+                                      
+                                      //findoffsetbetweentimezonespublic () *60
+                                  const tosenddatatocreatebooking={
+                                            
+                                            menteeuniqid:sessionStorage.getItem("uniqid") ,
+                                            mentoruniqid: profileuniqid ,
+                                            menteedatetime: {fromdatetime:String(dayjs( dateanddetails2.date +"-"+selectedtimebuttonvalue , "M/D/YYYY-hh:mm A").format("DD-MM-YYYY_hh:mm A"))   , todatetime:String(dayjs( dateanddetails2.date +"-"+selectedtimebuttonvalue , "M/D/YYYY-hh:mm A").add(Number(services[modalserviceid].durationinminutes.slice(0, -3)), 'minute').format("DD-MM-YYYY_hh:mm A")),  timezone:selectedtzone ,            fromweekday:String(dateanddetails2.weekday)    },
+                                            mentordatetime: { fromdatetime:(findoffsetbetweentimezonespublic (selectedtzone , mentortzone ) == 0)?  String(dayjs( dateanddetails2.date +"-"+selectedtimebuttonvalue , "M/D/YYYY-hh:mm A").format("DD-MM-YYYY_hh:mm A")): (findoffsetbetweentimezonespublic (selectedtzone , mentortzone ) > 0)? String(dayjs( dateanddetails2.date +"-"+selectedtimebuttonvalue , "M/D/YYYY-hh:mm A").add(findoffsetbetweentimezonespublic (selectedtzone , mentortzone ) *60 , 'minute').format("DD-MM-YYYY_hh:mm A")): String(dayjs( dateanddetails2.date +"-"+selectedtimebuttonvalue , "M/D/YYYY-hh:mm A").subtract( Math.abs(findoffsetbetweentimezonespublic (selectedtzone , mentortzone ) *60) , 'minute').format("DD-MM-YYYY_hh:mm A")) , 
+                                                             todatetime: (findoffsetbetweentimezonespublic (selectedtzone , mentortzone ) == 0)? String(dayjs( dateanddetails2.date +"-"+selectedtimebuttonvalue , "M/D/YYYY-hh:mm A").add(Number(services[modalserviceid].durationinminutes.slice(0, -3))  , 'minute').format("DD-MM-YYYY_hh:mm A")) : ((Number(services[modalserviceid].durationinminutes.slice(0, -3)) + findoffsetbetweentimezonespublic (selectedtzone , mentortzone ) *60) > 0)? String(dayjs( dateanddetails2.date +"-"+selectedtimebuttonvalue , "M/D/YYYY-hh:mm A").add((Number(services[modalserviceid].durationinminutes.slice(0, -3)) + findoffsetbetweentimezonespublic (selectedtzone , mentortzone ) *60), 'minute').format("DD-MM-YYYY_hh:mm A")) : String(dayjs( dateanddetails2.date +"-"+selectedtimebuttonvalue , "M/D/YYYY-hh:mm A").subtract( Math.abs((Number(services[modalserviceid].durationinminutes.slice(0, -3)) + findoffsetbetweentimezonespublic (selectedtzone , mentortzone ) *60)), 'minute').format("DD-MM-YYYY_hh:mm A")) ,
+                                                             timezone:mentortzone 
+                                                             },
+                                            sessiondetails:{sessiontitle:services[modalserviceid].servicetitle     , sessiontype:services[modalserviceid].typeofservice   , cost:services[modalserviceid].priceofservice ,currencyofcost: services[modalserviceid].currencyofservice ,durationofservice: services[modalserviceid].durationinminutes}
+
+
+                                  }
+
+                                  fetch(server+"/createbookingcase1", {
+                                        
+                                        // Adding method type
+                                        method: "POST",
+                                         
+                                        // Adding body or contents to send
+                                        body: JSON.stringify(tosenddatatocreatebooking),
+                                         
+                                        // Adding headers to the request
+                                        headers: {
+                                            "Content-type": "application/json; charset=UTF-8"
+                                        }
+                                    })
                                      
-                                     console.log(selectedtimebuttonvalue)
+                                    // Converting to JSON
+                                    .then(response =>  response.json())
+                                     
+                                    // // Displaying results to console
+                                      .then((json) => { 
+
+                                        console.log(json)
+
+                                      
+                                        var blockeddateentry ={
+                                          mentoruniqid:profileuniqid   ,
+                                          date: dayjs(((findoffsetbetweentimezonespublic (selectedtzone , mentortzone ) == 0)?  String(dayjs( dateanddetails2.date +"-"+selectedtimebuttonvalue , "M/D/YYYY-hh:mm A").format("DD-MM-YYYY_hh:mm A")): (findoffsetbetweentimezonespublic (selectedtzone , mentortzone ) > 0)? String(dayjs( dateanddetails2.date +"-"+selectedtimebuttonvalue , "M/D/YYYY-hh:mm A").add(findoffsetbetweentimezonespublic (selectedtzone , mentortzone ) *60 , 'minute').format("DD-MM-YYYY_hh:mm A")): String(dayjs( dateanddetails2.date +"-"+selectedtimebuttonvalue , "M/D/YYYY-hh:mm A").subtract( Math.abs(findoffsetbetweentimezonespublic (selectedtzone , mentortzone ) *60) , 'minute').format("DD-MM-YYYY_hh:mm A"))),"DD-MM-YYYY_hh:mm A").format("YYYY-MM-DD") ,    
+                                          datetime: { fromdatetime:(findoffsetbetweentimezonespublic (selectedtzone , mentortzone ) == 0)?  String(dayjs( dateanddetails2.date +"-"+selectedtimebuttonvalue , "M/D/YYYY-hh:mm A").format("DD-MM-YYYY_hh:mm A")): (findoffsetbetweentimezonespublic (selectedtzone , mentortzone ) > 0)? String(dayjs( dateanddetails2.date +"-"+selectedtimebuttonvalue , "M/D/YYYY-hh:mm A").add(findoffsetbetweentimezonespublic (selectedtzone , mentortzone ) *60 , 'minute').format("DD-MM-YYYY_hh:mm A")): String(dayjs( dateanddetails2.date +"-"+selectedtimebuttonvalue , "M/D/YYYY-hh:mm A").subtract( Math.abs(findoffsetbetweentimezonespublic (selectedtzone , mentortzone ) *60) , 'minute').format("DD-MM-YYYY_hh:mm A")) , 
+                                                             todatetime: (findoffsetbetweentimezonespublic (selectedtzone , mentortzone ) == 0)? String(dayjs( dateanddetails2.date +"-"+selectedtimebuttonvalue , "M/D/YYYY-hh:mm A").add(Number(services[modalserviceid].durationinminutes.slice(0, -3))  , 'minute').format("DD-MM-YYYY_hh:mm A")) : ((Number(services[modalserviceid].durationinminutes.slice(0, -3)) + findoffsetbetweentimezonespublic (selectedtzone , mentortzone ) *60) > 0)? String(dayjs( dateanddetails2.date +"-"+selectedtimebuttonvalue , "M/D/YYYY-hh:mm A").add((Number(services[modalserviceid].durationinminutes.slice(0, -3)) + findoffsetbetweentimezonespublic (selectedtzone , mentortzone ) *60), 'minute').format("DD-MM-YYYY_hh:mm A")) : String(dayjs( dateanddetails2.date +"-"+selectedtimebuttonvalue , "M/D/YYYY-hh:mm A").subtract( Math.abs((Number(services[modalserviceid].durationinminutes.slice(0, -3)) + findoffsetbetweentimezonespublic (selectedtzone , mentortzone ) *60)), 'minute').format("DD-MM-YYYY_hh:mm A")) ,
+                                                            
+                                                             }  ,
+                                          timezone: mentortzone
+
+
+                                        }
+                                      
+                                      /////////////////////////////////////////////update payment status and block date////add to success responce of razerpay////////////////////////////////////////////////////////////////////
+                                      fetch(server+"/updatepayment", {
+                                        
+                                        // Adding method type
+                                        method: "POST",
+                                         
+                                        // Adding body or contents to send
+                                        body: JSON.stringify(blockeddateentry),
+                                         
+                                        // Adding headers to the request
+                                        headers: {
+                                            "Content-type": "application/json; charset=UTF-8"
+                                        }
+                                    })
+                                     
+                                    // Converting to JSON
+                                    .then(response2 =>  response2.json())
+                                     
+                                    // // Displaying results to console
+                                      .then((json2) => { 
+
+
+                                        console.log(json2)
+                                        setblockeddatesarray(json2)
+                                        setOpen2(false)
+                                        setOpen(false)
+                                        
+                                        setTimeout(() => {
+                                           
+                                          navigate("/dashboard");
+
+                                            }, 2500);
+                                        
+                                          
+
+                                      })
+
+
+                                             
+
+                                      /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                      
 
 
 
-                      
-                    }}
+                                      
+                                      
+                                      
+                                      }).catch((err)=>{
+
+    
+
+                                                                           })
+
+
+                                  console.log(tosenddatatocreatebooking)
+
+
+
+                                 }
+
+                                 else
+                                 {
+
+                                  console.log("uniq-id does not exist")
+
+                                 }
+
+                                     
+
+
+                                     
+                                     
+
+
+                                          }}
 
 
                     
@@ -1317,9 +1843,15 @@ selectedmatrixstate.forEach((element,index) => {
                                       });
 
                           var selectedweekdayavaliablity = convertavaliablitytotimezone(avaliablitystate, mentortzone , selectedtzone)[indexweneed2]
-                          console.log(selectedweekdayavaliablity)
+                          selectedweekdayavaliablity=removeblockeddates(selectedweekdayavaliablity , datesarray[indexweneed] , selectedtzone ,blockeddatesarray) 
                        var dateanddetails = datesarray[indexweneed]
-                                                          
+                       console.log("dateanddetails")
+                       console.log(dateanddetails )
+                       console.log("selectedweekdayavaliablity")
+                       console.log(selectedweekdayavaliablity)
+                       console.log(selectedtzone)  
+                       console.log("blocked dates")
+                       console.log(blockeddatesarray)                                 
 
 
                        
@@ -1428,6 +1960,18 @@ selectedmatrixstate.forEach((element,index) => {
          
          </div>
       </div>
+      <ToastContainer
+position="top-center"
+autoClose={5000}
+hideProgressBar={false}
+newestOnTop={false}
+closeOnClick
+rtl={false}
+pauseOnFocusLoss
+draggable
+pauseOnHover
+theme="light"
+/>
       </div>
     )
   }

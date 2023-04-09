@@ -5,8 +5,8 @@ import React, { useEffect } from 'react';
  
 
 async function Authbeforeeverypage() {
-  const server = "https://165.232.114.169:4100"
-  // const server ="http://localhost:4100"
+  //const server = "https://165.232.114.169:4100"
+   const server ="http://localhost:4100"
 
   const email_id =  localStorage.getItem('uname');
 
@@ -102,6 +102,7 @@ async function Authbeforeeverypage() {
   {
     Auth_State = 1;
     sessionStorage.setItem("AUTH", "true");
+    sessionStorage.setItem('uniqid', json.uniqueIDfromserv);
   }
   
    

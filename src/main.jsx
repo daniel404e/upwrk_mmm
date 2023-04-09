@@ -74,7 +74,7 @@ const router = createBrowserRouter([
     element: <Logoutpage/>,
   },
   {
-    path: "/meeting",
+    path: "/meeting/:bookingid",
     element: <Meetingpage/>,
   }
 ]);
