@@ -1,43 +1,22 @@
 import { Outlet, Link } from "react-router-dom";
-import Header from '../components/header.jsx'
-import Headerauthenticated from '../components/headerafterauth.jsx'
-import authbeforepage from '../components/auth.js'
+ 
 import React, { useState , useEffect} from 'react';
-import Searchandfilterbar from '../components/searchbar.jsx'
-//import Searchandfilterbar from './generalerror.jsx'
+//import Searchandfilterbar from '../components/searchbar.jsx'
+ import Searchandfilterbar from './generalerror.jsx'
 import Profilegrid from '../components/explorepagegrid.jsx'
 
 
 function Explorepage() {
      
-  const [exploreauthstate, setexploreauthstate] = useState(0);
+  const [exploreauthstate, setexploreauthstate] = useState(1);
         
-  useEffect(() => {
-
-    authbeforepage().then((resultofprms)=>{
-
-      const authstate =resultofprms
-      if( authstate == 1)
-   {
-     
-    setexploreauthstate(1);
-     
-   }
-   else
-   {
-    setexploreauthstate(0);
-   }
-      
-      
-    
-    })
+ 
   
    
   
    
    
-  
-  }, []);
+   
 
 
   const [activefiltersinexplore, setactivefiltersinexplore] = useState([]);
@@ -99,7 +78,7 @@ function Explorepage() {
   return (
     
     <div className="bg-white">
-   {exploreauthstate? <Headerauthenticated/> : <Header/>   } 
+    
 
     <div className="container mx-auto sm:px-6 lg:px-8" style={{marginTop:"5%"}} >
       
