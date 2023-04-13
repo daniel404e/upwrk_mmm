@@ -111,11 +111,11 @@ import {
 
 
   const profileicondropdowndata = [
-    { name: 'Profile', description: 'Edit Your Profile here ', href: '#', icon: UserCircleIcon  },
-    { name: 'Bookings', description: 'Manage your Bookings and Plan with Calendar here', href: '#', icon: CalendarDaysIcon  },
-    { name: 'Explore', description: "Explore your Favourite Influencers,Creators,Teachers ...here", href: '#', icon: GlobeAmericasIcon  },
-    { name: 'Messages', description: 'Connect with Your Mentors Here', href: '#', icon: ChatBubbleLeftEllipsisIcon   },
-    { name: 'Wallet', description: 'Manage your balance and Billing here', href: '#', icon: WalletIcon  },
+    { name: 'Profile', description: 'Edit Your Profile here ', href: '/dashboard/profile', icon: UserCircleIcon  },
+    { name: 'Bookings', description: 'Manage your Bookings and Plan with Calendar here', href: "/dashboard/bookings", icon: CalendarDaysIcon  },
+    { name: 'Explore', description: "Explore your Favourite Influencers,Creators,Teachers ...here", href: '/explore', icon: GlobeAmericasIcon  },
+    { name: 'Messages', description: 'Connect with Your Mentors Here', href: '/dashboard/messages', icon: ChatBubbleLeftEllipsisIcon   },
+    { name: 'Wallet', description: 'Manage your balance and Billing here', href: '/dashboard/walletpayment', icon: WalletIcon  },
   ]
   const profileiconbottombuttons = [
     { name: 'Log out', href: '/logout', icon: ArrowLeftOnRectangleIcon  },

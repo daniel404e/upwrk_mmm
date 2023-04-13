@@ -4,6 +4,7 @@ import Headerauthenticated from '../components/headerafterauth.jsx'
 import authbeforepage from '../components/auth.js'
 import React, { useState , useEffect} from 'react';
 import Searchandfilterbar from '../components/searchbar.jsx'
+//import Searchandfilterbar from './generalerror.jsx'
 import Profilegrid from '../components/explorepagegrid.jsx'
 
 

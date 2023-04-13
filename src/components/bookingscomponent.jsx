@@ -1,8 +1,10 @@
 import { CalendarIcon, MapPinIcon, UsersIcon, VideoCameraIcon ,ChevronDoubleRightIcon   ,CheckCircleIcon ,UserIcon ,ChatBubbleBottomCenterIcon ,ClockIcon  } from '@heroicons/react/20/solid'
 import {  useState ,useEffect} from 'react'
+import { Transition } from '@headlessui/react'
 import { Outlet, Link , redirect ,Navigate, Route, Routes, useNavigate  } from "react-router-dom";
 import dayjs  from  'dayjs'
 import timezoneslist from '../data/timezones.json'
+import coffeelogo from '../assets/greentea.svg'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import relativeTime  from  'dayjs/plugin/relativeTime' 
 dayjs.extend(relativeTime) 
@@ -151,8 +153,10 @@ function currentdatetimeintimezone(wantedtimezone)
 
    
    
-  
-   
+  setTimeout(() => {
+    setIsShowing(true)
+  }, 1500);
+      
    
   
   }, []);
@@ -160,21 +164,38 @@ function currentdatetimeintimezone(wantedtimezone)
 
    
 
-
+  const [isShowing, setIsShowing] = useState(false)
 
 
 
 
 
   return (
+    <>
     <div className="mx-auto max-w-7xl px-3 sm:px-3 lg:px-3">
     {/* We've used 3xl here, but feel free to try other max-widths based on your needs */}
+    <div className='lg:mt-20 sm:mt-5 mb-5 flex relative justify-center '>
+    <h1 className=' font-medium tracking-wide text-2xl text-gray-500  drop-shadow-2xl  '>BOOKINGS</h1> 
+    <img className="h-8 w-auto" src= {coffeelogo} alt="" />
+    </div>
+    <Transition
+        show={isShowing}
+        enter="transition-opacity duration-2000"
+        enterFrom="opacity-0"
+        enterTo="opacity-100"
+        leave="transition-opacity duration-2000"
+        leaveFrom="opacity-100"
+        leaveTo="opacity-0"
+      >
     <div className="mx-auto max-w-5xl">
+    
     <div className="overflow-hidden bg-white shadow sm:rounded-md">
+    
       <ul role="list" className="divide-y divide-gray-200">
+      
         {bookings.map((position) => (
           <li key={position.id}>
-            <a href="#" className="block hover:bg-gray-50">
+            <a   className="block hover:bg-gray-50">
               <div className="px-4 py-4 sm:px-6">
                 <div className="flex items-center justify-between">
                   <p className="truncate text-sm font-medium text-indigo-600">{position.servicetitle}</p>
@@ -252,6 +273,8 @@ function currentdatetimeintimezone(wantedtimezone)
       </ul>
     </div>
     </div>
+    </Transition>
     </div>
+    </>
   )
 }

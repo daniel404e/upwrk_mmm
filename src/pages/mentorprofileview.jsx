@@ -1648,7 +1648,7 @@ selectedmatrixstate.forEach((element,index) => {
                                         
                                         setTimeout(() => {
                                            
-                                          navigate("/dashboard");
+                                          navigate("/dashboard/bookings");
 
                                             }, 2500);
                                         

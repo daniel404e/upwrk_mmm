@@ -26,24 +26,7 @@ const products = [
         imageAlt: 'Front of zip tote bag with white canvas, black canvas straps and handle, and black zipper pulls.',
         price: "tina turner",
       },
-      {
-        id: 3,
-        name: faker.name.jobTitle(),
-        color: faker.random.words(7),
-        href: '#',
-        imageSrc: faker.image.people(1234, 2345, true),
-        imageAlt: 'Front of zip tote bag with white canvas, black canvas straps and handle, and black zipper pulls.',
-        price: faker.name.firstName(),
-      } ,
-      {
-        id: 4,
-        name: faker.name.jobTitle(),
-        color: faker.random.words(7),
-        href: '#',
-        imageSrc: faker.image.people(1234, 2345, true),
-        imageAlt: 'Front of zip tote bag with white canvas, black canvas straps and handle, and black zipper pulls.',
-        price: faker.name.firstName(),
-      } 
+      
        
   ]
 

@@ -13,6 +13,7 @@ import Generalerrorpage from './pages/generalerror.jsx'
 import Paymentfailurepage from './pages/paymentfailure.jsx'
 import Logoutpage from './pages/logout.jsx'
 import Meetingpage from './pages/meetingpage.jsx'
+import Scrappycodetodelete from './pages/scrappycodetodelete'
  
 
 import './index.css'
@@ -52,7 +53,7 @@ const router = createBrowserRouter([
     element: <Addservicesofferedduringonboardingpage/>,
   },
   {
-    path: "/dashboard",
+    path: "/dashboard/:whichtab",
     element: <Dashboardpage/>,
   },
   {
@@ -76,6 +77,10 @@ const router = createBrowserRouter([
   {
     path: "/meeting/:bookingid",
     element: <Meetingpage/>,
+  },
+  {
+    path: "/scrappycodetodelete",
+    element: <Scrappycodetodelete/>,
   }
 ]);
 
