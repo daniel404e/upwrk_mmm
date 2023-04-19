@@ -62,6 +62,7 @@ export default function CustomFilters() {
               <SocialFilter />
 
               <VerificationFilter />
+
             </div>
           </Popover.Panel>
         </Transition>
