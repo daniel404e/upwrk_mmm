@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
-import { useSearchBox } from "react-instantsearch-hooks-web";
-import useDebounce from "../hooks/useDebounce";
-import Select from "react-select";
-import { category } from "../../constants";
 import { MagnifyingGlassCircleIcon } from "@heroicons/react/24/solid";
+import { useEffect, useState } from "react";
+import { useRefinementList, useSearchBox } from "react-instantsearch-hooks-web";
+import Select from "react-select";
+import { REFINEMENT_ATTRIBUTES } from "../common/constants";
+import useDebounce from "../hooks/useDebounce";
 
 const categorySelectStyles = {
   control: (baseStyles) => ({
@@ -36,13 +36,14 @@ const categorySelectStyles = {
   }),
 };
 
-export default function CustomSearchBox({
-  currentSelected,
-  onCategoryChanged,
-}) {
+export default function CustomSearchBox() {
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const { refine } = useSearchBox();
+
+  const { items, refine: refineCategory } = useRefinementList({
+    attribute: REFINEMENT_ATTRIBUTES.category,
+  });
 
   useEffect(() => {
     refine(debouncedSearchQuery);
@@ -55,13 +56,12 @@ export default function CustomSearchBox({
     >
       <Select
         className="block w-2/12   text-gray-900 shadow-sm  border-0 max-[1050px]:hidden "
-        options={category}
+        options={items}
         styles={categorySelectStyles}
         classNames="rounded-md"
         placeholder="All"
         maxMenuHeight={500}
-        value={currentSelected}
-        onChange={onCategoryChanged}
+        onChange={({ value }) => refineCategory(value)}
         components={{
           IndicatorSeparator: () => null,
         }}

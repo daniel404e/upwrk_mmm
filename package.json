@@ -28,6 +28,7 @@
     "imagekitio-react": "^2.0.0",
     "npm-upgrade": "^3.1.0",
     "react": "^18.2.0",
+    "react-detect-click-outside": "^1.1.7",
     "react-dom": "^18.2.0",
     "react-instantsearch-dom": "^6.39.1",
     "react-instantsearch-hooks-web": "^6.42.2",
