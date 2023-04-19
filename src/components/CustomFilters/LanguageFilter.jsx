@@ -1,9 +1,12 @@
 import { LanguageIcon } from "@heroicons/react/24/solid";
+import { useRefinementList } from "react-instantsearch-hooks-web";
 import { REFINEMENT_ATTRIBUTES } from "../../common/constants";
 import SelectionFilter from "../BaseFilters/SelectionFilter";
 
 export default function LanguageFilter() {
-
+  const { items: languageRefinements, refine } = useRefinementList({
+    attribute: REFINEMENT_ATTRIBUTES.language,
+  });
   return (
     <SelectionFilter
       icon={
@@ -13,7 +16,8 @@ export default function LanguageFilter() {
         />
       }
       title="Language"
-      attribute={REFINEMENT_ATTRIBUTES.language}
+      options={languageRefinements}
+      refine={refine}
     />
   );
 }
