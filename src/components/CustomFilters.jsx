@@ -1,13 +1,14 @@
 import { Popover, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 import { useDetectClickOutside } from "react-detect-click-outside";
-
 import { FunnelIcon } from "@heroicons/react/24/solid";
-import CategoryFilter from "./CustomFilters/CategoryFilter";
-import GenderFilter from "./CustomFilters/GenderFilter";
-import LanguageFilter from "./CustomFilters/LanguageFilter";
-import SocialFilter from "./CustomFilters/SocialFilter";
-import VerificationFilter from "./CustomFilters/VerificationFilter";
+import {
+  CategoryFilter,
+  GenderFilter,
+  LanguageFilter,
+  SocialFilter,
+  VerificationFilter,
+} from "./Filters";
 
 export default function CustomFilters() {
   const [isOpen, setIsOpen] = useState(false);
@@ -62,7 +63,6 @@ export default function CustomFilters() {
               <SocialFilter />
 
               <VerificationFilter />
-
             </div>
           </Popover.Panel>
         </Transition>
