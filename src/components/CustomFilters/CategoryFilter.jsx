@@ -1,8 +1,13 @@
 import { InboxStackIcon } from "@heroicons/react/24/solid";
+import { useRefinementList } from "react-instantsearch-hooks-web";
 import { REFINEMENT_ATTRIBUTES } from "../../common/constants";
 import SelectionFilter from "../BaseFilters/SelectionFilter";
 
 export default function CategoryFilter() {
+  const { items: categoryRefinements, refine } = useRefinementList({
+    attribute: REFINEMENT_ATTRIBUTES.category,
+  });
+
   return (
     <SelectionFilter
       icon={
@@ -12,7 +17,8 @@ export default function CategoryFilter() {
         />
       }
       title="Category"
-      attribute={REFINEMENT_ATTRIBUTES.gender}
+      options={categoryRefinements}
+      refine={refine}
     />
   );
 }
