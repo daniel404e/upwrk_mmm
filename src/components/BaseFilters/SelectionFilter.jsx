@@ -5,9 +5,15 @@ import {
 } from "react-instantsearch-hooks-web";
 import Select from "react-select";
 
-export default function SelectionFilter({ icon, title, attribute }) {
+export default function SelectionFilter({
+  icon,
+  title,
+  attribute,
+  transformItems = undefined,
+}) {
   const { items, refine } = useRefinementList({
     attribute,
+    transformItems,
   });
   const { refine: clearRefinements } = useClearRefinements({
     includedAttributes: [attribute],
@@ -26,7 +32,7 @@ export default function SelectionFilter({ icon, title, attribute }) {
         {title}
       </legend>
       <Select
-        className="w-full mt-2 text-gray-900 shadow-sm  border-0"
+        className="w-full mt-2 text-gray-900 shadow-sm capitalize border-0"
         options={items}
         value={internalRefinement}
         classNames="rounded-md"

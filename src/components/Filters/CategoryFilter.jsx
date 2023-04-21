@@ -12,7 +12,7 @@ export default function CategoryFilter() {
         />
       }
       title="Category"
-      attribute={REFINEMENT_ATTRIBUTES.gender}
+      attribute={REFINEMENT_ATTRIBUTES.category}
     />
   );
 }
