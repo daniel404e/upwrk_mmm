@@ -1,7 +1,7 @@
 export const REFINEMENT_ATTRIBUTES = {
-  language: "documentdata.personalinfo.country",
+  language: "documentdata.profiledata.profilelanguage.content",
   gender: "documentdata.personalinfo.gender",
-  social: "documentdata.personalinfo.social",
-  verification: "documentdata.personalinfo.verification",
-  category: "documentdata.personalinfo.category",
+  social: "documentdata.profiledata.socials.socialmedia",
+  verification: "documentdata.profiledata.verified",
+  category: "documentdata.profiledata.profileskills.name",
 };

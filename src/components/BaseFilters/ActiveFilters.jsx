@@ -11,18 +11,16 @@ export default function ActiveFilters() {
       <div className="bg-gray-100 rounded-md " style={{ width: "80%" }}>
         <div className="mx-auto max-w-7xl py-3 px-4 sm:flex sm:items-center sm:px-6 lg:px-8">
           <h3 className="text-sm font-medium text-gray-500">Active Filters</h3>
-
           <div
             aria-hidden="true"
             className="hidden h-5 w-px bg-gray-300 sm:ml-4 sm:block"
           />
-
           <div className="mt-2 sm:mt-0 sm:ml-4">
             <div className="-m-1 flex flex-wrap items-center">
               {items.map((activeFilter) => (
                 <span
                   key={activeFilter.label}
-                  className="m-1 inline-flex items-center rounded-full border border-gray-200 bg-white py-1.5 pl-3 pr-2 text-sm font-medium text-gray-900"
+                  className="m-1 inline-flex items-center rounded-full border border-gray-200 bg-white py-1.5 pl-3 pr-2 text-sm font-medium text-gray-900 capitalize"
                 >
                   <span>{activeFilter.label}</span>
 

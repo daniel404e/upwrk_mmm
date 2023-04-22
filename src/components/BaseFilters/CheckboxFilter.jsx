@@ -1,9 +1,27 @@
+import { useRef } from "react";
 import { useRefinementList } from "react-instantsearch-hooks-web";
 
-export default function CheckboxFilter({ icon, title, attribute }) {
+export default function CheckboxFilter({
+  icon,
+  title,
+  attribute,
+  transformItems = undefined,
+}) {
   const { items, refine } = useRefinementList({
     attribute,
+    transformItems,
   });
+  const inputRef = useRef(null);
+
+  const triggerInputChange = () => {
+    const event = new Event("input", { bubbles: true });
+    inputRef.current.dispatchEvent(event);
+  };
+
+  const onClick = (refinement) => {
+    refine(refinement.value);
+    triggerInputChange();
+  };
 
   return (
     <fieldset className="mt-4">
@@ -15,28 +33,25 @@ export default function CheckboxFilter({ icon, title, attribute }) {
         {items.map((refinement) => (
           <div
             key={refinement.value}
-            className="relative flex items-start py-4"
+            className="relative flex items-start py-4 cursor-pointer"
+            onClick={() => onClick(refinement)}
           >
             <div className="min-w-0 flex-1 text-sm leading-6">
-              <label
-                htmlFor={`person-${refinement.value}`}
-                className="select-none font-medium text-gray-900"
-              >
+              <label className="select-none font-medium text-gray-900 capitalize cursor-pointer">
                 {refinement.label}
               </label>
             </div>
             <div className="ml-3 flex h-6 items-center">
               <input
+                ref={inputRef}
                 id={`person-${refinement.value}`}
                 name={`person-${refinement.value}`}
                 type="checkbox"
                 checked={refinement.isRefined}
                 key={refinement.value}
                 value={refinement.value}
-                onChange={(e) => {
-                  refine(refinement.value);
-                }}
-                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                onChange={(e) => void 0}
+                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600 cursor-pointer"
               />
             </div>
           </div>
