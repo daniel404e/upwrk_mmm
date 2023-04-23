@@ -5,3 +5,5 @@ export const REFINEMENT_ATTRIBUTES = {
   verification: "documentdata.profiledata.verified",
   category: "documentdata.profiledata.profileskills.name",
 };
+
+export const SOCIAL_MEDIA_LIST = ["facebook", "twitter", "linkedin", "instagram", "youtube"]

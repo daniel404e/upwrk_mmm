@@ -1,6 +1,7 @@
 import { CursorArrowRippleIcon } from "@heroicons/react/24/solid";
 import { REFINEMENT_ATTRIBUTES } from "../../common/constants";
 import CheckboxFilter from "../BaseFilters/CheckboxFilter";
+import { transformSocialItems } from "../../../utils/refinements";
 
 export default function SocialFilter() {
   return (
@@ -13,6 +14,7 @@ export default function SocialFilter() {
       }
       title="Social Search"
       attribute={REFINEMENT_ATTRIBUTES.social}
+      transformItems={transformSocialItems}
     />
   );
 }

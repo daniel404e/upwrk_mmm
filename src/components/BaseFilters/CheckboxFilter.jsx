@@ -1,6 +1,16 @@
 import { useRef } from "react";
 import { useRefinementList } from "react-instantsearch-hooks-web";
 
+/**
+ * @typedef {import("react-instantsearch-hooks-web").UseRefinementListProps} UseRefinementListProps
+ * @param {{
+ *  icon: JSX.Element
+ *  title: string
+ *  attribute: UseRefinementListProps['attribute']
+ *  transformItems: UseRefinementListProps['transformItems']
+ * }} props
+ * @returns
+ */
 export default function CheckboxFilter({
   icon,
   title,
