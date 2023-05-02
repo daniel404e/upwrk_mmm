@@ -7,7 +7,7 @@ import {
 } from "react-instantsearch-hooks-web";
 import Select from "react-select";
 import { transformCategoryItems } from "../../utils/refinements";
-import { REFINEMENT_ATTRIBUTES } from "../common/constants";
+import { HITS_PER_PAGE, REFINEMENT_ATTRIBUTES } from "../common/constants";
 import useDebounce from "../hooks/useDebounce";
 
 const categorySelectStyles = {
@@ -49,6 +49,7 @@ export default function CustomSearchBox() {
   const { items, refine: refineCategory } = useRefinementList({
     attribute: REFINEMENT_ATTRIBUTES.category,
     transformItems: transformCategoryItems,
+    limit: HITS_PER_PAGE
   });
 
   const { items: currentItems } = useCurrentRefinements({

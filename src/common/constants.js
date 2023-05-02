@@ -19,3 +19,6 @@ export const SOCIAL_MEDIA_LIST = [
 
 export const STATIC_LANGUAGES = languageJson;
 export const STATIC_CATEGORIES = skillJson.lines;
+
+// Number Constants
+export const HITS_PER_PAGE = 20;
