@@ -1,9 +1,9 @@
 import { LanguageIcon } from "@heroicons/react/24/solid";
 import { REFINEMENT_ATTRIBUTES } from "../../common/constants";
 import SelectionFilter from "../BaseFilters/SelectionFilter";
+import { transformLanguageItems } from "../../../utils/refinements";
 
 export default function LanguageFilter() {
-
   return (
     <SelectionFilter
       icon={
@@ -14,6 +14,7 @@ export default function LanguageFilter() {
       }
       title="Language"
       attribute={REFINEMENT_ATTRIBUTES.language}
+      transformItems={transformLanguageItems}
     />
   );
 }
