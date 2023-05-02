@@ -1,7 +1,12 @@
 import { MagnifyingGlassCircleIcon } from "@heroicons/react/24/solid";
-import { useEffect, useState } from "react";
-import { useRefinementList, useSearchBox } from "react-instantsearch-hooks-web";
+import { useEffect, useMemo, useState } from "react";
+import {
+  useCurrentRefinements,
+  useRefinementList,
+  useSearchBox,
+} from "react-instantsearch-hooks-web";
 import Select from "react-select";
+import { transformCategoryItems } from "../../utils/refinements";
 import { REFINEMENT_ATTRIBUTES } from "../common/constants";
 import useDebounce from "../hooks/useDebounce";
 
@@ -43,11 +48,23 @@ export default function CustomSearchBox() {
 
   const { items, refine: refineCategory } = useRefinementList({
     attribute: REFINEMENT_ATTRIBUTES.category,
+    transformItems: transformCategoryItems,
+  });
+
+  const { items: currentItems } = useCurrentRefinements({
+    includedAttributes: REFINEMENT_ATTRIBUTES.category,
   });
 
   useEffect(() => {
     refine(debouncedSearchQuery);
   }, [debouncedSearchQuery]);
+
+  const selectedValue = useMemo(() => {
+    if (!currentItems.length) return null;
+    const { refinements } = currentItems[0];
+    const lastRefinement = refinements[refinements.length - 1];
+    return lastRefinement;
+  }, [currentItems]);
 
   return (
     <div
@@ -57,6 +74,7 @@ export default function CustomSearchBox() {
       <Select
         className="block w-2/12   text-gray-900 shadow-sm  border-0 max-[1050px]:hidden "
         options={items}
+        value={selectedValue}
         styles={categorySelectStyles}
         classNames="rounded-md"
         placeholder="All"

@@ -1,6 +1,7 @@
 import { InboxStackIcon } from "@heroicons/react/24/solid";
 import { REFINEMENT_ATTRIBUTES } from "../../common/constants";
 import SelectionFilter from "../BaseFilters/SelectionFilter";
+import { transformCategoryItems } from "../../../utils/refinements";
 
 export default function CategoryFilter() {
   return (
@@ -13,6 +14,7 @@ export default function CategoryFilter() {
       }
       title="Category"
       attribute={REFINEMENT_ATTRIBUTES.category}
+      transformItems={transformCategoryItems}
     />
   );
 }

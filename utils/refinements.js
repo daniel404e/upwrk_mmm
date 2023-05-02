@@ -1,5 +1,16 @@
-import { SOCIAL_MEDIA_LIST } from "../src/common/constants";
+/**
+ * @typedef {ReturnType<NonNullable<import("react-instantsearch-hooks-web").UseRefinementListProps['transformItems']>>} ItemList
+ */
 
+import {
+  SOCIAL_MEDIA_LIST,
+  STATIC_CATEGORIES,
+  STATIC_LANGUAGES,
+} from "../src/common/constants";
+
+/**
+ * @param {ItemList} items
+ */
 export function transformItemsToRefinementLabels(items) {
   const filters = items
     .map((item) => transformVerificationItems(item.refinements))
@@ -22,20 +33,49 @@ export function transformVerificationItems(items) {
 }
 
 /**
- * Add more options to fixed
+ * @template T
+ * @param {Array<T>} staticItems
+ * @param {ItemList} items
+ * @param {T extends String ? never :  keyof T } valueKey
  */
-export function transformSocialItems(items) {
-  return SOCIAL_MEDIA_LIST.map((value) => {
+function setRefinementItems(staticItems, items, valueKey = null) {
+  return staticItems.map((_value) => {
+    const value = typeof _value === "string" ? _value : _value[valueKey];
     const item = items.find((item) => item.value === value);
-    if (item) {
-      return item;
-    }
-    return {
+    /**
+     * @type {NonNullable<typeof item>}
+     */
+    const newItem = {
       isRefined: false,
       count: 0,
       label: value,
       highlighted: value,
       value,
     };
+    if (item) {
+      return item;
+    }
+    return newItem;
   });
+}
+
+/**
+ * @param {ItemList} items
+ */
+export function transformSocialItems(items) {
+  return setRefinementItems(SOCIAL_MEDIA_LIST, items);
+}
+
+/**
+ * @param {ItemList} items
+ */
+export function transformLanguageItems(items) {
+  return setRefinementItems(STATIC_LANGUAGES, items, "name");
+}
+
+/**
+ * @param {ItemList} items
+ */
+export function transformCategoryItems(items) {
+  return setRefinementItems(STATIC_CATEGORIES, items, "name");
 }
